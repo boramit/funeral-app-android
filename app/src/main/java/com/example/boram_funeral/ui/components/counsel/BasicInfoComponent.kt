@@ -14,7 +14,6 @@ import com.example.boram_funeral.ui.components.common.Input.CustomTextField
 
 @Composable
 fun BasicInfoComponent(
-
     typeOptions: List<String>,
     relationshipOptions: List<String>,
     counselingNo: String,

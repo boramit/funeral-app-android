@@ -21,12 +21,12 @@ fun ModalSheet(
     ) {
     if (isOpen) {
         Dialog(
-
             onDismissRequest = onDismiss,
             properties = DialogProperties(
                 dismissOnBackPress = true, // 뒤로가기 버튼으로 닫기
                 dismissOnClickOutside = true, // 외부 클릭 시 닫기
-                usePlatformDefaultWidth = false
+                usePlatformDefaultWidth = false,
+                decorFitsSystemWindows = false
             )
         ) {
             // 다이얼로그의 카드 형태 디자인

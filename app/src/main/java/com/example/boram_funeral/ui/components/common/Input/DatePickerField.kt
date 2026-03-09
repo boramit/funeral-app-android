@@ -53,7 +53,7 @@ fun DatePickerField(
                 .border(1.dp, Color(0xFFE8EAED), RoundedCornerShape(8.dp))
                 .clickable { showModal = true } // 박스 전체 클릭 시 달력 오픈
                 .padding(horizontal = 16.dp, vertical = 2.dp),
-            contentAlignment = Alignment.CenterStart
+            contentAlignment = Alignment.CenterStart,
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),

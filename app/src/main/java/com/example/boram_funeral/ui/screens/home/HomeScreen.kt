@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import com.example.boram_funeral.ui.components.common.Button.ButtonSize
 import com.example.boram_funeral.ui.components.common.Button.CustomButton
 import com.example.boram_funeral.ui.components.common.Modal.ModalSheet
+import com.example.boram_funeral.ui.components.contracts.funeral.CasketShroudStep
 import com.example.boram_funeral.ui.components.contracts.funeral.ReceptionBasicStep
 import com.example.boram_funeral.ui.components.contracts.funeral.UseContractStepContent
 import com.example.boram_funeral.ui.components.contracts.funeral.UseContractTableInputTest
@@ -33,15 +34,7 @@ fun HomeScreen(navController: NavController) {
     val contractSteps = listOf<@Composable () -> Unit>(
         { ReceptionBasicStep() },           // Index 0
         { UseContractTableInputTest() },     // Index 1
-        { ReceptionBasicStep() },           // Index 2
-        { UseContractTableInputTest() },     // Index 3
-        { ReceptionBasicStep() },           // Index 4
-        { UseContractTableInputTest() },     // Index 5
-        { ReceptionBasicStep() },           // Index 6
-        { UseContractTableInputTest() },     // Index 7
-        { ReceptionBasicStep() },           // Index 8
-        { UseContractTableInputTest() },     // Index 9
-        { ReceptionBasicStep() }            // Index 10
+        { CasketShroudStep() },           // Index 2
     )
 
     // 2. 리스트의 크기를 기반으로 pagerState 생성 (자동으로 11이 됨)

@@ -106,18 +106,7 @@ fun UseContractStepContent(
             modifier = Modifier.fillMaxWidth().weight(1f),
             userScrollEnabled = false,
         ) { page ->
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .verticalScroll(rememberScrollState()),
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//                verticalArrangement = Arrangement.Center,
-//            ) {
-//                // 내부 컨텐츠
-//                contractSteps[page].invoke()
-//            }
             contractSteps[page].invoke()
-
         }
     }
 }

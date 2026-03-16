@@ -14,6 +14,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.TextStyle
@@ -22,10 +24,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.boram_funeral.ui.components.contracts.funeral.base.FullWidthHeaderCell
 import com.example.boram_funeral.ui.components.contracts.funeral.base.SignatureArea
 import com.example.boram_funeral.ui.components.contracts.funeral.base.SignatureDialog
-import com.example.boram_funeral.ui.components.contracts.funeral.base.TableCellItem
 import com.example.boram_funeral.ui.components.contracts.funeral.base.TableHeaderCell
 
 // 1. 데이터 모델 정의
@@ -128,6 +128,123 @@ fun CasketShroudStep() {
                 FuneralTable(leftItems, rightItems)
             }
         }
+    }
+}
+
+@Composable
+fun RowScope.TableCellItem(item: FuneralServiceItem?) {
+    if (item != null) {
+
+        Box(
+            modifier = Modifier
+                .weight(2.5f)
+                .fillMaxHeight()
+                .border(0.5.dp, Color(0xFFD1D1D1))
+                .padding(8.dp),
+            contentAlignment = Alignment.CenterStart){
+            // 1. 품명
+            Text(
+                text = item.name,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        // 2. 수량 (수정된 입력 필드)
+        Box(
+            modifier = Modifier
+                .weight(1.2f)
+                .fillMaxHeight()
+                .border(0.5.dp, Color(0xFFD1D1D1))
+                .padding(8.dp),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            if (item.isReadOnly) {
+                // 읽기 전용일 때: 텍스트만 표시 (수정 불가)
+                Text(
+                    text = item.unit,
+                    fontSize = 12.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.End,
+                    color = Color.DarkGray
+                )
+            } else {
+                // 입력 가능할 때: 이전과 동일하게 TextField 표시
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    BasicTextField(
+                        value = item.quantity.value,
+                        onValueChange = { item.quantity.value = it },
+                        modifier = Modifier.weight(1f),
+                        textStyle = androidx.compose.ui.text.TextStyle(
+                            textAlign = TextAlign.End,
+                            fontSize = 12.sp
+                        ),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true
+                    )
+                    if (item.unit.isNotEmpty()) {
+                        Text(text = item.unit, fontSize = 12.sp, modifier = Modifier.padding(start = 2.dp))
+                    }
+                }
+            }
+        }
+
+        // 3. 금액 (위아래 분리 로직 포함)
+        Column(
+            modifier = Modifier
+                .weight(2.3f)
+                .fillMaxHeight()
+                .border(0.5.dp, Color(0xFFD1D1D1))
+        ) {
+            val prices = item.price.split("/")
+            prices.forEachIndexed { index, price ->
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .let {
+                            if (index > 0) it.drawBehind {
+                                drawLine(
+                                    Color(0xFFD1D1D1),
+                                    Offset(0f, 0f),
+                                    Offset(size.width, 0f),
+                                    1f
+                                )
+                            } else it
+                        }
+                        .padding(8.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Text(text = if(price.trim().isEmpty()) "" else "${price.trim()}원", fontSize = 12.sp)
+                }
+            }
+        }
+    } else {
+        Box(modifier = Modifier
+            .weight(6f)
+            .fillMaxHeight()
+            .border(0.5.dp, Color(0xFFD1D1D1)))
+    }
+}
+
+@Composable
+fun RowScope.FullWidthHeaderCell(item: FuneralServiceItem, totalWeight: Float) {
+    val bgColor = if (item.isYellowHeader) Color.Yellow else Color(0xFFF5F5F5)
+    Box(
+        modifier = Modifier
+            .weight(totalWeight)
+            .fillMaxHeight() // 부모 Row의 높이에 맞춤
+            .background(bgColor)
+            .border(0.5.dp, Color(0xFFD1D1D1)), // 이미지와 맞추기 위해 검정색 테두리 권장
+        contentAlignment = Alignment.Center // 가로/세로 모두 중앙 정렬
+    ) {
+        Text(
+            text = item.name,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            fontSize = 12.sp,
+            color = Color.Black
+        )
     }
 }
 

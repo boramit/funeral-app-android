@@ -18,6 +18,7 @@ import com.example.boram_funeral.ui.components.common.Button.ButtonSize
 import com.example.boram_funeral.ui.components.common.Button.CustomButton
 import com.example.boram_funeral.ui.components.common.Modal.ModalSheet
 import com.example.boram_funeral.ui.components.contracts.funeral.CasketShroudStep
+import com.example.boram_funeral.ui.components.contracts.funeral.FoodCateringStep
 import com.example.boram_funeral.ui.components.contracts.funeral.ReceptionBasicStep
 import com.example.boram_funeral.ui.components.contracts.funeral.UseContractStepContent
 import com.example.boram_funeral.ui.components.contracts.funeral.UseContractTableInputTest
@@ -35,6 +36,7 @@ fun HomeScreen(navController: NavController) {
         { ReceptionBasicStep() },           // Index 0
         { UseContractTableInputTest() },     // Index 1
         { CasketShroudStep() },           // Index 2
+        { FoodCateringStep() },           // Index 3
     )
 
     // 2. 리스트의 크기를 기반으로 pagerState 생성 (자동으로 11이 됨)

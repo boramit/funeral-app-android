@@ -56,6 +56,11 @@ dependencies {
     // Logging Interceptor: 터미널/콘솔에서 로그를 보기 위함
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
+    // ViewModel + Compose 연동
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -1,4 +1,6 @@
 // CounselingViewModel.kt
+package com.example.boram_funeral.ui.screens.counsel.logic
+
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -1,6 +1,6 @@
 package com.example.boram_funeral.ui.navigation
 
-import CounselingViewModel
+import com.example.boram_funeral.ui.screens.counsel.logic.CounselingViewModel
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -78,6 +78,7 @@ fun NavGraph() {
                     counselingViewModel = counselingViewModel
                 )
                 }
+
 
                 // 2. 멤버 리스트 페이지
                 composable("member") {

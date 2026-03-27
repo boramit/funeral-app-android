@@ -57,7 +57,6 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.window.Dialog
-import com.example.boram_funeral.ui.components.contracts.funeral.FuneralServiceItem
 
 
 @Composable
@@ -138,7 +137,7 @@ fun RowScope.InputCell(
             .fillMaxHeight()
             .defaultMinSize(minHeight = 48.dp)
             .border(0.5.dp, Color(0xFFD1D1D1))
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = 4.dp),
         textStyle = TextStyle(fontSize = fontSize, textAlign = textAlign),
         singleLine = true,
         maxLines = 1,
@@ -305,11 +304,12 @@ fun RowScope.SelectCell(
 fun RoomPriceRow(
     roomName: String,  // "201호실"
     seatCount: String, // "56석"
+    dayCount: String,  // "일수"
+    onDayCountChange: (String) -> Unit,
     size: String,      // "50평형"
     priceH: String,    // "26,000원"
     priceD: String,    // "624,000원"
     totalAmount: String, // 금액 칸에 들어갈 값
-    onAmountChange: (String) -> Unit
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -357,7 +357,7 @@ fun RoomPriceRow(
         ) {
             Text("x", fontSize = 12.sp)
             Spacer(modifier = Modifier.width(4.dp))
-            MiniInputCell(value = "", onValueChange = {}, width = 35.dp)
+            MiniInputCell(value = dayCount, onValueChange = onDayCountChange, width = 35.dp)
             Spacer(modifier = Modifier.width(4.dp))
             Text("일", fontSize = 12.sp)
         }
@@ -365,9 +365,10 @@ fun RoomPriceRow(
         // 4. 금액 칸 (우측 정렬)
         InputCell(
             value = totalAmount,
-            onValueChange = onAmountChange,
+            onValueChange = {},
             weight = 1.5f,
-            alignment = Alignment.CenterEnd
+            alignment = Alignment.CenterEnd,
+            isReadOnly = true
         )
     }
 }
@@ -376,7 +377,11 @@ fun RoomPriceRow(
 fun ServiceInputRow(
     title: String,
     price: String,
-    unitText: String, // "일" 또는 "회"
+    unitText: String,
+    countValue: String = "",                    // 추가
+    onCountChange: (String) -> Unit = {},       // 추가
+    totalAmount: String = "",                   // 추가
+    onAmountChange: (String) -> Unit = {},      // 추가
     fontSize: TextUnit = 12.sp
 ) {
     Row(modifier = Modifier
@@ -400,13 +405,23 @@ fun ServiceInputRow(
             Text("x", fontSize = 12.sp, letterSpacing = (-0.5).sp)
             Spacer(modifier = Modifier.width(2.dp))
             // 수량을 입력하는 작은 창
-            MiniInputCell(value = "", onValueChange = {}, width = 30.dp)
+            MiniInputCell(
+                value = countValue,           // ✅ 연결
+                onValueChange = onCountChange, // ✅ 연결
+                width = 30.dp
+            )
             Spacer(modifier = Modifier.width(2.dp))
             Text(unitText, fontSize = 12.sp, letterSpacing = (-0.5).sp)
         }
 
         // [금액] 최종 계산 결과 또는 입력창 (우측 정렬)
-        InputCell(value = "", onValueChange = {}, weight = 1.5f, alignment = Alignment.CenterEnd)
+        InputCell(
+            value = totalAmount,              // ✅ 연결
+            onValueChange = onAmountChange,
+            weight = 1.5f,
+            alignment = Alignment.CenterEnd,
+            isReadOnly = true                 // 자동 계산이므로 읽기전용
+        )
     }
 }
 

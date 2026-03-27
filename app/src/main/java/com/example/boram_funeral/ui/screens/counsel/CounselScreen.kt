@@ -1,6 +1,6 @@
 package com.example.boram_funeral.ui.screens.counsel
 
-import CounselingViewModel
+import com.example.boram_funeral.ui.screens.counsel.logic.CounselingViewModel
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

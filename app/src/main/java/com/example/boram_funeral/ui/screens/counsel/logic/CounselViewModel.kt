@@ -1,6 +1,6 @@
 package com.example.boram_funeral.ui.screens.counsel.logic
 
-import CounselingViewModel.CounselingUiState
+
 import com.example.boram_funeral.util.AudioRecorder
 
 import android.content.Context

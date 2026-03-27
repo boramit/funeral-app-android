@@ -31,6 +31,7 @@ object RetrofitClient {
         retrofit.create(CounselApiService::class.java)
     }
 
+
     // 3. 회원용 서비스 (나중에 MemberApiService를 만드시면 주석을 해제하세요)
     /*
     val memberApi: MemberApiService by lazy {

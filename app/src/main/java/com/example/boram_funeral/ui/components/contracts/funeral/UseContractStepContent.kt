@@ -91,7 +91,8 @@ fun UseContractStepContent(
     pagerState: PagerState,
     contractSteps: List<@Composable () -> Unit>,
     onClose: () -> Unit,
-    onFinish: () -> Unit
+    onFinish: () -> Unit,
+
 ) {
     // 2. 전체 레이아웃 (Scaffold를 컴포넌트 내부에서 사용하여 상하단 고정)
     Column(modifier = Modifier.fillMaxSize()) {

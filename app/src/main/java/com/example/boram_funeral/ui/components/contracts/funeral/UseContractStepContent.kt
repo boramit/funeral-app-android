@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.boram_funeral.ui.components.common.Button.ButtonSize
 import com.example.boram_funeral.ui.components.common.Button.CustomButton
+import com.example.boram_funeral.ui.theme.boram_Br_Color
 import kotlinx.coroutines.launch
 
 @Composable
@@ -115,7 +116,7 @@ fun UseContractStepContent(
 @Composable
 fun ContractStepHeader(
     progress: Float,
-    activeColor: Color = Color(0xFF6200EE), // 기본값 설정
+    activeColor: Color = boram_Br_Color, // 기본값 설정
     trackColor: Color = Color.LightGray,
     strokeWidth: Dp = 2.dp // 프로그레스 바의 두께(사이즈)
 ) {

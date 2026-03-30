@@ -1,10 +1,12 @@
 package com.example.boram_funeral.ui.screens.contract.logic
 
 import com.example.boram_funeral.ui.screens.contract.model.ContractData
+import com.example.boram_funeral.ui.screens.contract.model.FamilyTicks
 import com.example.boram_funeral.ui.screens.contract.model.FuneralItem
 import com.example.boram_funeral.ui.screens.contract.model.FuneralServiceItem
 import com.example.boram_funeral.ui.screens.contract.model.RoomPriceItem
 import com.example.boram_funeral.ui.screens.contract.model.ServiceItem
+import com.example.boram_funeral.ui.screens.contract.model.SurvivorRowTick
 import com.example.boram_funeral.ui.screens.contract.model.defaultFuneralItems
 import com.example.boram_funeral.ui.screens.contract.model.defaultLeftItems
 import com.example.boram_funeral.ui.screens.contract.model.defaultRightItems
@@ -149,10 +151,95 @@ data class ContractUiState(
     val roomNumber: String = "",
     /** 매점용품 리스트 (셋팅수량 고정, 반품수량 입력) */
     val items: List<FuneralItem> = defaultFuneralItems(),
-) {
+
+
+    // =========================================================================
+    // Step 6 — FuneraltermsStep (이용약관)
+    // =========================================================================
+    /** 서명 다이얼로그 표시 여부 */
+    val termsIsSignatureDialogVisible: Boolean = false,
+    /** 서명 리컴포지션 트리거 (Path는 remember로 관리) */
+    val termsSignatureUpdateTick: Int = 0,
+
+    // =========================================================================
+    // Step 7 — PrivacyConsentStep (개인정보동의)
+    // =========================================================================
+
+    /** 1. 개인정보 수집·이용 동의 (필수) */
+    val privacyCollectionAgree: Boolean? = null,       // null = 미선택, true = 동의, false = 미동의
+
+    /** 2. 상품 홍보에 관한 동의 (선택) */
+    val privacyMarketingAgree: Boolean? = null,
+
+    /** 3. 고유식별번호(주민등록번호) 수집·이용 동의 */
+    val privacyIdNumberAgree: Boolean? = null,
+
+    /** 4. 제3자 제공 동의 — 회사별 */
+    val privacyThirdPartyAgree: Boolean? = null,
+
+    /** 서명 다이얼로그 표시 여부 (Step 7 전용) */
+    val isPrivacySignatureDialogVisible: Boolean = false,
+    /** 서명 리컴포지션 트리거 (Path는 remember로 관리) */
+    val privacySignatureUpdateTick: Int = 0,
+
+    // =========================================================================
+    // Step 8 — DeceasedInfoConsentStep (사망자 정보 제공동의서)
+    // =========================================================================
+
+    // ── 4. 사망자 인적사항 ────────────────────────────────────────────────────
+    /** 성명 (펜 입력 tick) */
+    val deceasedNameTick: Int = 0,
+    /** 성별 (펜 입력 tick) */
+    val deceasedGenderTick: Int = 0,
+    /** 주민등록번호 (펜 입력 tick) */
+    val deceasedIdNumberTick: Int = 0,
+    /** 최종 주민등록 주소 (펜 입력 tick) */
+    val deceasedAddressTick: Int = 0,
+    /** 사망일 (펜 입력 tick) */
+    val deceasedDeathDateTick: Int = 0,
+    /** 장사시설 이용일 부터 — 년/월/일 각각 펜 입력 tick */
+    val facilityFromYearTick: Int = 0,
+    val facilityFromMonthTick: Int = 0,
+    val facilityFromDayTick: Int = 0,
+    /** 장사시설 이용일 까지 — 년/월/일 각각 펜 입력 tick */
+    val facilityToYearTick: Int = 0,
+    val facilityToMonthTick: Int = 0,
+    val facilityToDayTick: Int = 0,
+
+    // ── 5. 유족 등의 인적사항 (최대 3행) ─────────────────────────────────────
+    /** 각 유족 행의 펜 입력 tick 목록 [관계, 성명, 생년월일, 주소, 서명] × 3행 */
+    val survivorRows: List<SurvivorRowTick> = List(3) { SurvivorRowTick() },
+
+    // ── 하단 서명 ─────────────────────────────────────────────────────────────
+    /** 서명 다이얼로그 표시 여부 */
+    val isDeceasedSignatureDialogVisible: Boolean = false,
+    /** 서명 리컴포지션 트리거 */
+    val deceasedSignatureUpdateTick: Int = 0,
+
+    // =========================================================================
+    // Step 9 — CustomerConfirmStep (고객확인서)
+    // =========================================================================
+
+    /** 설명 여부 칸 — 항목별 펜 입력 tick (5개 항목) */
+    val confirmExplanationTicks: List<Int> = List(5) { 0 },
+
+    /** 서명 다이얼로그 표시 여부 */
+    val isConfirmSignatureDialogVisible: Boolean = false,
+    /** 서명 리컴포지션 트리거 */
+    val confirmSignatureUpdateTick: Int = 0,
+
+    // =========================================================================
+    // Step 10 — FamilyInfoStep (서면 유가족 정보)
+    // =========================================================================
+
+    /**
+     * 유가족 정보 — 구분별 이름 목록 (각 칸 펜 입력 tick)
+     * 상주 6명, 자부 6명, 기타 6명, 여식 6명, 사위 6명
+     */
+    val familyTicks: FamilyTicks = FamilyTicks(),
+    ) {
     // 매점용품 금액 자동 계산
     val settingAmount: Long get() = items.sumOf { it.unitPrice * it.settingQuantity }
     val returnAmount: Long  get() = items.sumOf { it.unitPrice * it.returnQuantity }
     val totalAmount: Long   get() = settingAmount - returnAmount
 }
-

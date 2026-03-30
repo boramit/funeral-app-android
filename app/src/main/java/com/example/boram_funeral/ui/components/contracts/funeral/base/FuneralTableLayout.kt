@@ -478,7 +478,6 @@ fun ContractFooter(
     capturedPath: Path?   // 서명 데이터
 ) {
 
-
     Column(
         modifier = Modifier
             .fillMaxWidth()

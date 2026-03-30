@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- 내부 캐시 (앱 내부) -->
+    <cache-path name="pdf_cache" path="pdf/" />
+    <!-- 외부 저장소 Documents — 파일 앱에서 확인 가능 -->
+    <external-files-path name="pdf_external" path="Documents/" />
+    <!-- 공용 Downloads 폴더 — 태블릿 파일 앱에서 바로 확인 가능 -->
+    <external-path name="pdf_downloads" path="Download/" />
+</paths>

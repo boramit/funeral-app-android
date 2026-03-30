@@ -3,11 +3,14 @@ package com.example.boram_funeral.ui.screens.contract.logic
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.boram_funeral.ui.screens.contract.model.ContractData
+import com.example.boram_funeral.ui.screens.contract.model.FamilyTicks
 import com.example.boram_funeral.ui.screens.contract.model.RoomType
+import com.example.boram_funeral.ui.screens.contract.model.SurvivorRowTick
 import com.example.boram_funeral.ui.screens.contract.model.defaultRoomPriceItems
 import com.example.boram_funeral.ui.screens.contract.model.defaultServiceItems
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import java.util.Calendar
 
 class ContractViewModel : ViewModel() {
@@ -282,6 +285,161 @@ class ContractViewModel : ViewModel() {
         updateField { state ->
             state.copy(items = state.items.map { it.copy(returnQuantity = 0) })
         }
+
+
+    // =========================================================================
+    // Step 6 — FuneraltermsStep (이용약관)
+    // =========================================================================
+
+    /** 서명 다이얼로그 열기 */
+    fun showTermsSignatureDialog() =
+        updateField { it.copy(termsIsSignatureDialogVisible = true) }
+
+    /** 서명 다이얼로그 닫기 */
+    fun dismissTermsSignatureDialog() =
+        updateField { it.copy(termsIsSignatureDialogVisible = false) }
+
+    /** 서명 완료 — 다이얼로그 닫고 tick 증가로 리컴포지션 유도
+     *  Path 객체는 View 레이어에서 remember로 관리하고
+     *  tick 값 변화로 TermsFooter가 다시 그려지도록 트리거만 함 */
+    fun confirmTermsSignature() =
+        updateField {
+            it.copy(
+                termsIsSignatureDialogVisible = false,
+                termsSignatureUpdateTick = it.termsSignatureUpdateTick + 1
+            )
+        }
+
+    // =========================================================================
+    // Step 7 — PrivacyConsentStep (개인정보동의) ViewModel 함수
+    // =========================================================================
+
+    // ── 1. 개인정보 수집·이용 동의 (필수) ────────────────────────────────────
+    fun updatePrivacyCollectionAgree(agreed: Boolean) =
+        _uiState.update { it.copy(privacyCollectionAgree = agreed) }
+
+    // ── 2. 상품 홍보 동의 (선택) ──────────────────────────────────────────────
+    fun updatePrivacyMarketingAgree(agreed: Boolean) =
+        _uiState.update { it.copy(privacyMarketingAgree = agreed) }
+
+    // ── 3. 고유식별번호 수집·이용 동의 ───────────────────────────────────────
+    fun updatePrivacyIdNumberAgree(agreed: Boolean) =
+        _uiState.update { it.copy(privacyIdNumberAgree = agreed) }
+
+    // ── 4. 제3자 제공 동의 — 전체 일괄 ──────────────────────────────────────
+    fun updatePrivacyThirdPartyAgree(agreed: Boolean) =
+        _uiState.update { it.copy(privacyThirdPartyAgree = agreed) }
+
+    // ── 서명 다이얼로그 ───────────────────────────────────────────────────────
+    fun showPrivacySignatureDialog() =
+        _uiState.update { it.copy(isPrivacySignatureDialogVisible = true) }
+
+    fun dismissPrivacySignatureDialog() =
+        _uiState.update { it.copy(isPrivacySignatureDialogVisible = false) }
+
+    fun confirmPrivacySignature() =
+        _uiState.update {
+            it.copy(
+                privacySignatureUpdateTick = it.privacySignatureUpdateTick + 1,
+                isPrivacySignatureDialogVisible = false
+            )
+        }
+
+    // =========================================================================
+    // Step 8 — DeceasedInfoConsentStep (사망자 정보 제공동의서) ViewModel 함수
+    // =========================================================================
+
+    // ── 4. 사망자 인적사항 펜 입력 tick 갱신 ─────────────────────────────────
+    fun tickDeceasedName()         = _uiState.update { it.copy(deceasedNameTick = it.deceasedNameTick + 1) }
+    fun tickDeceasedGender()       = _uiState.update { it.copy(deceasedGenderTick = it.deceasedGenderTick + 1) }
+    fun tickDeceasedIdNumber()     = _uiState.update { it.copy(deceasedIdNumberTick = it.deceasedIdNumberTick + 1) }
+    fun tickDeceasedAddress()      = _uiState.update { it.copy(deceasedAddressTick = it.deceasedAddressTick + 1) }
+    fun tickDeceasedDeathDate()    = _uiState.update { it.copy(deceasedDeathDateTick = it.deceasedDeathDateTick + 1) }
+    fun tickFacilityFromYear()  = _uiState.update { it.copy(facilityFromYearTick  = it.facilityFromYearTick  + 1) }
+    fun tickFacilityFromMonth() = _uiState.update { it.copy(facilityFromMonthTick = it.facilityFromMonthTick + 1) }
+    fun tickFacilityFromDay()   = _uiState.update { it.copy(facilityFromDayTick   = it.facilityFromDayTick   + 1) }
+    fun tickFacilityToYear()    = _uiState.update { it.copy(facilityToYearTick    = it.facilityToYearTick    + 1) }
+    fun tickFacilityToMonth()   = _uiState.update { it.copy(facilityToMonthTick   = it.facilityToMonthTick   + 1) }
+    fun tickFacilityToDay()     = _uiState.update { it.copy(facilityToDayTick     = it.facilityToDayTick     + 1) }
+
+    // ── 5. 유족 행 펜 입력 tick 갱신 ─────────────────────────────────────────
+    private fun updateSurvivorRow(index: Int, update: SurvivorRowTick.() -> SurvivorRowTick) {
+        _uiState.update { state ->
+            val updated = state.survivorRows.toMutableList()
+            updated[index] = updated[index].update()
+            state.copy(survivorRows = updated)
+        }
+    }
+
+    fun tickSurvivorRelation(index: Int)  = updateSurvivorRow(index) { copy(relationTick = relationTick + 1) }
+    fun tickSurvivorName(index: Int)      = updateSurvivorRow(index) { copy(nameTick = nameTick + 1) }
+    fun tickSurvivorBirthDate(index: Int) = updateSurvivorRow(index) { copy(birthDateTick = birthDateTick + 1) }
+    fun tickSurvivorAddress(index: Int)   = updateSurvivorRow(index) { copy(addressTick = addressTick + 1) }
+    fun tickSurvivorSignature(index: Int) = updateSurvivorRow(index) { copy(signatureTick = signatureTick + 1) }
+
+    // ── 하단 서명 다이얼로그 ──────────────────────────────────────────────────
+    fun showDeceasedSignatureDialog() =
+        _uiState.update { it.copy(isDeceasedSignatureDialogVisible = true) }
+
+    fun dismissDeceasedSignatureDialog() =
+        _uiState.update { it.copy(isDeceasedSignatureDialogVisible = false) }
+
+    fun confirmDeceasedSignature() =
+        _uiState.update {
+            it.copy(
+                deceasedSignatureUpdateTick = it.deceasedSignatureUpdateTick + 1,
+                isDeceasedSignatureDialogVisible = false
+            )
+        }
+
+    // =========================================================================
+    // Step 9 — CustomerConfirmStep (고객확인서) ViewModel 함수
+    // =========================================================================
+
+    /** 설명 여부 칸 펜 입력 tick 갱신 */
+    fun tickConfirmExplanation(index: Int) {
+        _uiState.update { state ->
+            val updated = state.confirmExplanationTicks.toMutableList()
+            updated[index] = updated[index] + 1
+            state.copy(confirmExplanationTicks = updated)
+        }
+    }
+
+    // ── 서명 다이얼로그 ───────────────────────────────────────────────────────
+    fun showConfirmSignatureDialog() =
+        _uiState.update { it.copy(isConfirmSignatureDialogVisible = true) }
+
+    fun dismissConfirmSignatureDialog() =
+        _uiState.update { it.copy(isConfirmSignatureDialogVisible = false) }
+
+    fun confirmConfirmSignature() =
+        _uiState.update {
+            it.copy(
+                confirmSignatureUpdateTick = it.confirmSignatureUpdateTick + 1,
+                isConfirmSignatureDialogVisible = false
+            )
+        }
+
+    // =========================================================================
+    // Step 10 — FamilyInfoStep (서면 유가족 정보) ViewModel 함수
+    // =========================================================================
+
+    private fun updateFamilyTicks(update: FamilyTicks.() -> FamilyTicks) {
+        _uiState.update { it.copy(familyTicks = it.familyTicks.update()) }
+    }
+
+    private fun tickListItem(list: List<Int>, index: Int): List<Int> =
+        list.toMutableList().also { it[index] = it[index] + 1 }
+
+    fun tickChiefMourner(index: Int)   = updateFamilyTicks { copy(chiefMournerTicks  = tickListItem(chiefMournerTicks,  index)) }
+    fun tickDaughterInLaw(index: Int)  = updateFamilyTicks { copy(daughterInLawTicks = tickListItem(daughterInLawTicks, index)) }
+    fun tickEtc(index: Int)            = updateFamilyTicks { copy(etcTicks           = tickListItem(etcTicks,           index)) }
+    fun tickDaughter(index: Int)       = updateFamilyTicks { copy(daughterTicks       = tickListItem(daughterTicks,      index)) }
+    fun tickSonInLaw(index: Int)       = updateFamilyTicks { copy(sonInLawTicks       = tickListItem(sonInLawTicks,      index)) }
+    fun tickExtra1(index: Int)         = updateFamilyTicks { copy(extra1Ticks         = tickListItem(extra1Ticks,        index)) }
+    fun tickExtra2(index: Int)         = updateFamilyTicks { copy(extra2Ticks         = tickListItem(extra2Ticks,        index)) }
+    fun tickExtra3(index: Int)         = updateFamilyTicks { copy(extra3Ticks         = tickListItem(extra3Ticks,        index)) }
+    fun tickExtra4(index: Int)         = updateFamilyTicks { copy(extra4Ticks         = tickListItem(extra4Ticks,        index)) }
 
 
     // =========================================================================

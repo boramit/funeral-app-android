@@ -22,3 +22,6 @@ val LocalScrollStateRegistrar = staticCompositionLocalOf<(Int, ScrollState) -> U
 
 /** HorizontalPager가 각 페이지에 주입하는 현재 페이지 번호 */
 val LocalPageIndex = staticCompositionLocalOf { -1 }
+
+/** PDF 캡처 중일 때 true — UI 전용 요소(X 버튼 등)를 숨기는 데 사용 */
+val LocalIsPdfCapturing = staticCompositionLocalOf { false }

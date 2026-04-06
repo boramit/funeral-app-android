@@ -1,7 +1,9 @@
 package com.example.boram_funeral.ui.components.contracts.funeral
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -71,11 +73,11 @@ private val flowData = listOf(
     FlowDay(
         title = "첫째 날",
         steps = listOf(
-            "임종\n(행사발생 접수)",
-            "장례식장으로\n고인 운송",
+            "임종 (행사발생 접수)",
+            "장례식장으로 고인 운송",
             "안치실 안치",
             "장례식장 계약",
-            "설전(設奠)\n영정 모시기",
+            "설전(設奠) 영정 모시기",
             "혼백(魂帛) 모시기",
             "부고(訃告)알림"
         )
@@ -146,20 +148,26 @@ fun CeremonyOrderStep() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(ColorBg)
             .verticalScroll(scrollState)
             .padding(16.dp)
     ) {
         // 제목
-        Text(
-            text = "장례의식 순서",
-            style = TextStyle(
-                color = ColorTitle,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(vertical = 12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "장례의식 순서",
+                style = TextStyle(
+                    color = ColorTitle,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
 
         // 테이블
         CeremonyTable()
@@ -180,6 +188,8 @@ fun CeremonyOrderStep() {
 
 @Composable
 private fun CeremonyTable() {
+    val mergedNote = ceremonyData.firstOrNull { it.note.isNotEmpty() }?.note ?: ""
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -190,11 +200,47 @@ private fun CeremonyTable() {
 
         Divider(color = ColorDivider, thickness = 1.dp)
 
-        // 데이터 행
-        ceremonyData.forEachIndexed { index, item ->
-            TableDataRow(item = item, index = index)
-            if (index < ceremonyData.lastIndex) {
-                Divider(color = ColorDivider, thickness = 1.dp)
+        // 본문: 구분+주요업무 열 / 비고 열(병합)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+        ) {
+            // 좌측: 구분 + 주요업무 (행별 분리)
+            Column(modifier = Modifier.weight(3.5f)) {
+                ceremonyData.forEachIndexed { index, item ->
+                    TableDataRow(item = item, index = index)
+                    if (index < ceremonyData.lastIndex) {
+                        Divider(color = ColorDivider, thickness = 1.dp)
+                    }
+                }
+            }
+
+            // 구분선
+            Box(
+                modifier = Modifier
+                    .width(1.dp)
+                    .fillMaxHeight()
+                    .background(ColorDivider)
+            )
+
+            // 우측: 비고 (전체 행 병합)
+            Box(
+                modifier = Modifier
+                    .weight(2f)
+                    .fillMaxHeight()
+                    .background(
+                        color = ColorRowEven,
+                        shape = RoundedCornerShape(bottomEnd = 8.dp)
+                    )
+                    .padding(horizontal = 10.dp, vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = mergedNote,
+                    style = TextStyle(color = ColorNote, fontSize = 12.sp),
+                    lineHeight = 18.sp
+                )
             }
         }
     }
@@ -237,17 +283,12 @@ private fun RowScope.HeaderCell(text: String, weight: Float) {
 
 @Composable
 private fun TableDataRow(item: DayItem, index: Int) {
-    val isLast = index == ceremonyData.lastIndex
     val bgColor = if (index % 2 == 0) ColorRowEven else ColorRowOdd
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                color = bgColor,
-                shape = if (isLast) RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp)
-                else RoundedCornerShape(0.dp)
-            )
+            .background(color = bgColor)
             .height(IntrinsicSize.Min)
     ) {
         // 구분
@@ -283,23 +324,6 @@ private fun TableDataRow(item: DayItem, index: Int) {
                     modifier = Modifier.padding(vertical = 2.dp)
                 )
             }
-        }
-
-        VerticalDivider()
-
-        // 비고
-        Box(
-            modifier = Modifier
-                .weight(2f)
-                .fillMaxHeight()
-                .padding(horizontal = 10.dp, vertical = 12.dp),
-            contentAlignment = Alignment.TopStart
-        ) {
-            Text(
-                text = item.note,
-                style = TextStyle(color = ColorNote, fontSize = 12.sp),
-                lineHeight = 18.sp
-            )
         }
     }
 }
@@ -388,7 +412,7 @@ private fun FlowDayColumn(day: FlowDay, modifier: Modifier = Modifier) {
 
 @Composable
 private fun FlowStepBox(text: String, isDotted: Boolean) {
-    val borderColor = if (isDotted) Color(0xFFE57373) else ColorFlowBorder
+    val borderColor = if (isDotted) Color(0xFFD1D1D1) else ColorFlowBorder
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -398,7 +422,7 @@ private fun FlowStepBox(text: String, isDotted: Boolean) {
             )
             .then(
                 if (isDotted) Modifier.dashedBorder(borderColor)
-                else Modifier.background(Color.Transparent, RoundedCornerShape(4.dp))
+                else Modifier.border(1.dp, borderColor, RoundedCornerShape(4.dp))
             )
             .padding(vertical = 8.dp, horizontal = 6.dp),
         contentAlignment = Alignment.Center

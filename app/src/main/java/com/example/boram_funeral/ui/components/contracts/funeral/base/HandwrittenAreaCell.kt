@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalIsPdfCapturing
 
 /**
  * 테이블 셀 내부에서 태블릿 펜으로 직접 글씨를 쓸 수 있는 입력 컴포넌트.
@@ -131,9 +132,10 @@ fun HandwrittenAreaCell(
             )
         }
 
-        // 내용이 있을 때만 X 버튼 표시
+        // 내용이 있을 때만 X 버튼 표시 (PDF 캡처 중에는 숨김)
+        val isPdfCapturing = LocalIsPdfCapturing.current
         AnimatedVisibility(
-            visible = hasContent,
+            visible = hasContent && !isPdfCapturing,
             enter = fadeIn() + scaleIn(),
             exit = fadeOut() + scaleOut(),
             modifier = Modifier.align(Alignment.TopEnd)

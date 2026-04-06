@@ -2,13 +2,17 @@ package com.example.boram_funeral.ui.components.contracts.funeral
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.window.Dialog
 import com.example.boram_funeral.ui.screens.contract.pdf.LocalPageIndex
 import com.example.boram_funeral.ui.screens.contract.pdf.LocalScrollStateRegistrar
 import androidx.compose.ui.Alignment
@@ -46,10 +50,7 @@ fun CasketShroudStep(viewModel: ContractViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Column(modifier = Modifier.fillMaxWidth(0.8f)) {
-            Text("장례서비스 이용 내역")
-        }
-        Column(modifier = Modifier.fillMaxWidth(0.8f)) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             FuneralTable(
                 leftItems  = uiState.leftItems,
                 rightItems = uiState.rightItems,
@@ -67,16 +68,58 @@ fun RowScope.TableCellItem(
     onQuantityChange: (String) -> Unit = {},
 ) {
     if (item != null) {
+        var showImageDialog by remember { mutableStateOf(false) }
+
+        // 이미지 모달 (noModal이면 표시하지 않음)
+        if (showImageDialog && !item.noModal) {
+            Dialog(onDismissRequest = { showImageDialog = false }) {
+                androidx.compose.material3.Card(
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = item.name,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+                        if (item.imageResId != null) {
+                            androidx.compose.foundation.Image(
+                                painter = painterResource(id = item.imageResId),
+                                contentDescription = item.name,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(max = 400.dp),
+                                contentScale = androidx.compose.ui.layout.ContentScale.Fit
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
         // 품명
         Box(
             modifier = Modifier
                 .weight(2.5f)
                 .fillMaxHeight()
                 .border(0.5.dp, Color(0xFFD1D1D1))
+                .then(if (!item.noModal) Modifier.clickable { showImageDialog = true } else Modifier)
                 .padding(8.dp),
             contentAlignment = Alignment.CenterStart
         ) {
-            Text(text = item.name, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Text(
+                text = item.name,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = if (item.imageResId != null && !item.noModal) Color(0xFF1A56DB) else Color.Unspecified
+            )
         }
 
         // 수량
@@ -243,7 +286,7 @@ fun FuneralTable(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "※ 임대차 계약 시 사용된 또는 예정된 물품을 기입한 것이며, 임차인의 요청에 의하여 추가되는 물품은\n거래명세서에 기록하여 정산하므로 최종 정산 금액과 다를 수 있음",
+                    text = "※ 임대차 계약 시 사용된 또는 예정된 물품을 기입한 것이며,\n 임차인의 요청에 의하여 추가되는 물품은\n 거래명세서에 기록하여 정산하므로 최종 정산 금액과 다를 수 있음",
                     textAlign = TextAlign.Center,
                     fontSize = 12.sp,
                     lineHeight = 20.sp,

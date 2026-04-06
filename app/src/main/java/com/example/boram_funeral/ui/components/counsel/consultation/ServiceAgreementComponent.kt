@@ -19,7 +19,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ServiceAgreementComponent(
     modifier: Modifier = Modifier,
-    onAgreementConfirmed: (Boolean) -> Unit
+    onAgreementConfirmed: (Boolean) -> Unit,
+    onOpenContract: () -> Unit = {}
 ) {
     var isAgreed by remember { mutableStateOf(false) }
 
@@ -68,7 +69,7 @@ fun ServiceAgreementComponent(
         Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, ){
             // 3. 이용계약서
             Button(
-                onClick = { /* 계약 진행 */ },
+                onClick = { onOpenContract() },
                 modifier = Modifier.width(200.dp).height(48.dp),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(

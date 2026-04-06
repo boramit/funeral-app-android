@@ -58,7 +58,7 @@ fun ReceptionBasicStep(viewModel: ContractViewModel) {
                     modifier = Modifier.width(300.dp).height(58.dp),
                     contentScale = ContentScale.Fit
                 )
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(28.dp))
                 Text(
                     text = "장례식장 이용계약서",
                     style = TextStyle(

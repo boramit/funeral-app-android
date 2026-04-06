@@ -40,7 +40,7 @@ fun SearchBarComponent(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
-            Box(modifier = Modifier.weight(0.5f)){
+            Box(modifier = Modifier.weight(0.85f)){
                 // 1. 성함 입력 (가변 너비)
                 CustomTextField(
                     value = name,
@@ -50,7 +50,7 @@ fun SearchBarComponent(
                 )
             }
 
-            Box(modifier = Modifier.weight(1f)){
+            Box(modifier = Modifier.weight(0.85f)){
                 DatePickerField(
                     label = "시작일",
                     value = startDate,
@@ -58,7 +58,7 @@ fun SearchBarComponent(
                 )
             }
 
-            Box(modifier = Modifier.weight(1f)){
+            Box(modifier = Modifier.weight(0.85f)){
                 DatePickerField(
                     label = "종료일",
                     value = endDate,

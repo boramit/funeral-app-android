@@ -1,31 +1,23 @@
 package com.example.boram_funeral.ui.components.contracts.funeral
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import com.example.boram_funeral.ui.screens.contract.pdf.LocalPageIndex
 import com.example.boram_funeral.ui.screens.contract.pdf.LocalScrollStateRegistrar
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,7 +27,6 @@ import com.example.boram_funeral.ui.components.contracts.funeral.base.TableHeade
 import com.example.boram_funeral.ui.screens.contract.logic.ContractViewModel
 import com.example.boram_funeral.ui.screens.contract.model.FoodCategoryItem
 import com.example.boram_funeral.ui.screens.contract.model.FoodServiceItem
-import com.example.boram_funeral.ui.screens.contract.model.PriceDetail
 
 @Composable
 fun FoodCateringStep(
@@ -57,7 +48,7 @@ fun FoodCateringStep(
     ) {
         // 로고 및 주문번호 섹션
         Row(
-            modifier = Modifier.fillMaxWidth(0.8f).padding(bottom = 16.dp),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
@@ -71,7 +62,7 @@ fun FoodCateringStep(
         }
 
         // 테이블 섹션
-        Column(modifier = Modifier.fillMaxWidth(0.8f)) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             FoodTable(FoodItems)
             SignatureTable(serviceItems)
         }

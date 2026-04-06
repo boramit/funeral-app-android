@@ -9,7 +9,9 @@ data class FuneralServiceItem(
     val isYellowHeader: Boolean = false,
     val quantity: String = "",     // MutableState 제거 — ViewModel에서 관리
     val isReadOnly: Boolean = false,
-    val remarks: String = ""       // MutableState 제거 — ViewModel에서 관리
+    val remarks: String = "",      // MutableState 제거 — ViewModel에서 관리
+    val imageResId: Int? = null,   // 품명 클릭 시 표시할 이미지 리소스 ID (null이면 이미지 없음)
+    val noModal: Boolean = false   // true이면 품명 클릭 모달 비활성화
 )
 
 fun defaultLeftItems() = listOf(
@@ -56,20 +58,20 @@ fun defaultRightItems() = listOf(
     FuneralServiceItem("축문",                    "권",          "5,000"),
     FuneralServiceItem("운구용 위생킷",           "개",              ""),
     FuneralServiceItem("유골함",                  isHeader = true),
-    FuneralServiceItem("유골함",                  "개",              ""),
-    FuneralServiceItem("각인비",                  "회",              ""),
-    FuneralServiceItem("전사비",                  "회",              ""),
+    FuneralServiceItem("유골함",                  "개",              "", noModal = true),
+    FuneralServiceItem("각인비",                  "회",              "", noModal = true),
+    FuneralServiceItem("전사비",                  "회",              "", noModal = true),
     FuneralServiceItem("영정사진",                isHeader = true),
-    FuneralServiceItem("인화",                    "회",        "100,000"),
-    FuneralServiceItem("액자",                    "회",         "40,000"),
-    FuneralServiceItem("빈소 LED 영정",           "개",         "60,000"),
+    FuneralServiceItem("인화",                    "회",        "100,000", noModal = true),
+    FuneralServiceItem("액자",                    "회",         "40,000", noModal = true),
+    FuneralServiceItem("빈소 LED 영정",           "개",         "60,000", noModal = true),
     FuneralServiceItem("장의차량",                isHeader = true),
-    FuneralServiceItem("리무진 , 버스",            "",        "1,500,000"),
-    FuneralServiceItem("이송비",                   "",              ""),
+    FuneralServiceItem("리무진 , 버스",            "",        "1,500,000", noModal = true),
+    FuneralServiceItem("이송비",                   "",              "", noModal = true),
     FuneralServiceItem("비아젬",                  isHeader = true),
-    FuneralServiceItem("비아젬",                   "",              ""),
-    FuneralServiceItem("오마주",                   "",              ""),
-    FuneralServiceItem("헤리티지박스",             "",              ""),
+    FuneralServiceItem("비아젬",                   "",              "", noModal = true),
+    FuneralServiceItem("오마주",                   "",              "", noModal = true),
+    FuneralServiceItem("헤리티지박스",             "",              "", noModal = true),
 )
 
 

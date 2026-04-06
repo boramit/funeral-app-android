@@ -60,7 +60,6 @@ fun DeceasedInfoConsentStep(viewModel: ContractViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(ColorBg)
     ) {
         Column(
             modifier = Modifier
@@ -133,7 +132,7 @@ fun DeceasedInfoConsentStep(viewModel: ContractViewModel) {
 
             // ── 하단 서명 푸터 ────────────────────────────────────────────────
             DeceasedInfoFooter(
-                year = "2026",
+                year = remember { java.util.Calendar.getInstance().get(java.util.Calendar.YEAR).toString() },
                 updateTick = uiState.deceasedSignatureUpdateTick,
                 capturedPath = signatureData,
                 onSignatureClick = { viewModel.showDeceasedSignatureDialog() }

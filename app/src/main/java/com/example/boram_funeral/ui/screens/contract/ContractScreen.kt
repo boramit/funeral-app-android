@@ -24,6 +24,7 @@ import com.example.boram_funeral.ui.screens.contract.logic.ContractViewModel
 import androidx.compose.runtime.CompositionLocalProvider
 import com.example.boram_funeral.ui.screens.contract.pdf.ContractPdfExporter
 import com.example.boram_funeral.ui.screens.contract.pdf.ContractScrollRegistry
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalIsPdfCapturing
 import com.example.boram_funeral.ui.screens.contract.pdf.LocalScrollStateRegistrar
 import com.example.boram_funeral.ui.screens.contract.pdf.PdfCaptureHelper
 import com.example.funeralcontract.ui.FuneralContractStep
@@ -81,7 +82,8 @@ fun ContractScreen(
         }
 
         CompositionLocalProvider(
-            LocalScrollStateRegistrar provides { page, state -> scrollRegistry.register(page, state) }
+            LocalScrollStateRegistrar provides { page, state -> scrollRegistry.register(page, state) },
+            LocalIsPdfCapturing provides isExporting,
         ) {
             Box(
                 modifier = Modifier

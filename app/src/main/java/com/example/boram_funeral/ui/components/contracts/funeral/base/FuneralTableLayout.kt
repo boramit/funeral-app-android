@@ -57,6 +57,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.window.Dialog
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalIsPdfCapturing
 
 
 @Composable
@@ -652,8 +653,9 @@ fun HandwrittenDateUnit(
 
         // 2. 삭제 버튼 (내용이 있을 때만 우측 상단에 표시)
         // AnimatedVisibility를 사용하면 부드럽게 나타나고 사라집니다.
+        val isPdfCapturing = LocalIsPdfCapturing.current
         AnimatedVisibility(
-            visible = hasContent,
+            visible = hasContent && !isPdfCapturing,
             enter = fadeIn() + scaleIn(),
             exit = fadeOut() + scaleOut(),
             modifier = Modifier.align(Alignment.TopEnd)

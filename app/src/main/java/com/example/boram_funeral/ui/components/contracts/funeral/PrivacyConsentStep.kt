@@ -11,6 +11,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.boram_funeral.ui.components.contracts.funeral.base.HandwrittenAreaCell
 import com.example.boram_funeral.ui.screens.contract.logic.ContractViewModel
 
 // ── 색상 ──────────────────────────────────────────────────────────────────────
@@ -66,7 +68,6 @@ fun PrivacyConsentStep(viewModel: ContractViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(ColorBg)
     ) {
         Column(
             modifier = Modifier
@@ -232,7 +233,7 @@ fun PrivacyConsentStep(viewModel: ContractViewModel) {
 
             // ── 하단 서명 푸터 ────────────────────────────────────────────────
             PrivacyFooter(
-                year = "2026",
+                year = remember { java.util.Calendar.getInstance().get(java.util.Calendar.YEAR).toString() },
                 updateTick = uiState.privacySignatureUpdateTick,
                 capturedPath = signatureData,
                 onSignatureClick = { viewModel.showPrivacySignatureDialog() }
@@ -366,21 +367,25 @@ private fun ConsentCheckRow(
             style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Bold, color = ColorText),
             modifier = Modifier.weight(1f)
         )
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(4.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(
-                checked = agreed == true,
-                onCheckedChange = { if (it) onAgree() },
-                colors = CheckboxDefaults.colors(checkedColor = ColorPrimary)
-            )
-            Text("동의", fontSize = 13.sp)
-            Spacer(modifier = Modifier.width(12.dp))
-            Checkbox(
-                checked = agreed == false,
-                onCheckedChange = { if (it) onDisagree() },
-                colors = CheckboxDefaults.colors(checkedColor = Color(0xFFE53935))
-            )
-            Text("미동의", fontSize = 13.sp)
+            Row(verticalAlignment = Alignment.CenterVertically){
+                Checkbox(
+                    checked = agreed == true,
+                    onCheckedChange = { if (it) onAgree() },
+                    colors = CheckboxDefaults.colors(checkedColor = ColorPrimary)
+                )
+                Text("동의", fontSize = 13.sp)
+            }
+            Spacer(modifier = Modifier.width(6.dp))
+            Row (verticalAlignment = Alignment.CenterVertically){
+                Checkbox(
+                    checked = agreed == false,
+                    onCheckedChange = { if (it) onDisagree() },
+                    colors = CheckboxDefaults.colors(checkedColor = Color(0xFFE53935))
+                )
+                Text("미동의", fontSize = 13.sp)
+            }
         }
     }
 }
@@ -503,12 +508,12 @@ private fun ThirdPartyTable(
 
             // 오른쪽 동의여부 — 4개 행 전체 높이를 차지하는 단일 셀
             VerticalLine()
-            Column(
+            Row(
                 modifier = Modifier
                     .weight(1.5f)
                     .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
@@ -519,7 +524,7 @@ private fun ThirdPartyTable(
                     )
                     Text("동의", fontSize = 11.sp)
                 }
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.width(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
                         checked = agreed == false,

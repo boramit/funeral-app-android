@@ -172,7 +172,7 @@ fun MemberListScreen(
                         )
                         CustomDropdownField(
                             label = "장례식장",
-                            options = counselViewModel.funeralOption,
+                            options = counselViewModel.funeralOptions,
                             selectedOption = uiState.selectedFuneral,
                             onOptionSelected = { selection ->
                                 // ✅ 선택된 값으로 상태 업데이트

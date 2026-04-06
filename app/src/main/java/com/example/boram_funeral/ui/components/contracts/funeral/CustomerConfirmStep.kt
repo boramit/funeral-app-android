@@ -84,7 +84,6 @@ fun CustomerConfirmStep(viewModel: ContractViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(ColorBg)
     ) {
         Column(
             modifier = Modifier
@@ -164,7 +163,7 @@ fun CustomerConfirmStep(viewModel: ContractViewModel) {
             Spacer(modifier = Modifier.height(24.dp))
             // ── 하단 날짜 및 서명 ─────────────────────────────────────────────
             CustomerConfirmFooter(
-                year = "2026",
+                year = remember { java.util.Calendar.getInstance().get(java.util.Calendar.YEAR).toString() },
                 updateTick = uiState.confirmSignatureUpdateTick,
                 capturedPath = signatureData,
                 onSignatureClick = { viewModel.showConfirmSignatureDialog() }

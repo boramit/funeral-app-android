@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalIsPdfCapturing
 import com.example.boram_funeral.ui.screens.contract.pdf.LocalPageIndex
 import com.example.boram_funeral.ui.screens.contract.pdf.LocalScrollStateRegistrar
 import androidx.compose.material.icons.Icons
@@ -98,8 +99,8 @@ fun FuneraltermsStep(
     // Path는 직렬화 불가 → remember로 로컬 관리 (Step 1과 동일한 패턴)
     var signaturePath by remember { mutableStateOf<Path?>(null) }
 
-    // 날짜 상태 (현재 연도 고정, 월/일 입력)
-    val year = "2026"
+    // 날짜 상태 (현재 연도 동적 계산)
+    val year = remember { java.util.Calendar.getInstance().get(java.util.Calendar.YEAR).toString() }
 
     val pageIndex = LocalPageIndex.current
     val registerScrollState = LocalScrollStateRegistrar.current
@@ -109,7 +110,6 @@ fun FuneraltermsStep(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF9F9F9))
     ) {
         Column(
             modifier = Modifier
@@ -350,8 +350,9 @@ fun HandwrittenDateUnit(
 
         // 2. 삭제 버튼 (내용이 있을 때만 우측 상단에 표시)
         // AnimatedVisibility를 사용하면 부드럽게 나타나고 사라집니다.
+        val isPdfCapturing = LocalIsPdfCapturing.current
         AnimatedVisibility(
-            visible = hasContent,
+            visible = hasContent && !isPdfCapturing,
             enter = fadeIn() + scaleIn(),
             exit = fadeOut() + scaleOut(),
             modifier = Modifier.align(Alignment.TopEnd)

@@ -23,6 +23,18 @@ class ContractViewModel : ViewModel() {
     )
     val uiState = _uiState.asStateFlow()
 
+    private val _isContractOpen = MutableStateFlow(false)
+    val isContractOpen = _isContractOpen.asStateFlow()
+
+    fun openContract() { _isContractOpen.value = true }
+    fun closeContract() { _isContractOpen.value = false }
+
+    private val _isPdfCapturing = MutableStateFlow(false)
+    val isPdfCapturing = _isPdfCapturing.asStateFlow()
+
+    fun startPdfCapture() { _isPdfCapturing.value = true }
+    fun endPdfCapture()   { _isPdfCapturing.value = false }
+
     // 공통 상태 업데이트 함수 — 모든 Step에서 이 함수를 통해 상태 변경
     fun updateField(transform: (ContractUiState) -> ContractUiState) {
         _uiState.value = transform(_uiState.value)

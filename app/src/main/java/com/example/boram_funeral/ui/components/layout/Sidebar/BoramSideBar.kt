@@ -52,7 +52,7 @@ fun BoramSideBar(
                 modifier = Modifier
                     .width(100.dp)
                     .height(32.dp),
-                contentScale = ContentScale.Fit // 비율에 맞춰 영역을 채움
+                contentScale = ContentScale.Fit
             )
             Spacer(modifier = Modifier.height(12.dp))
         }

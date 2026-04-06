@@ -46,7 +46,6 @@ fun FamilyInfoStep(viewModel: ContractViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(ColorBg)
             .verticalScroll(scrollState)
             .padding(horizontal = 20.dp, vertical = 20.dp)
     ) {

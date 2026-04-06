@@ -10,7 +10,10 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
@@ -18,7 +21,10 @@ import com.example.boram_funeral.ui.components.common.Button.ButtonSize
 import com.example.boram_funeral.ui.components.common.Button.CustomButton
 import com.example.boram_funeral.ui.components.contracts.funeral.*
 import com.example.boram_funeral.ui.screens.contract.logic.ContractViewModel
+import androidx.compose.runtime.CompositionLocalProvider
 import com.example.boram_funeral.ui.screens.contract.pdf.ContractPdfExporter
+import com.example.boram_funeral.ui.screens.contract.pdf.ContractScrollRegistry
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalScrollStateRegistrar
 import com.example.boram_funeral.ui.screens.contract.pdf.PdfCaptureHelper
 import com.example.funeralcontract.ui.FuneralContractStep
 
@@ -35,6 +41,7 @@ fun ContractScreen(
     contractViewModel: ContractViewModel,
 ) {
     val context = LocalContext.current
+    val view    = LocalView.current
     val scope   = rememberCoroutineScope()
 
     // ── Step 리스트 ───────────────────────────────────────────────────────────
@@ -42,7 +49,7 @@ fun ContractScreen(
         { ReceptionBasicStep(viewModel = contractViewModel) },
         { DeceasedDetailStep(viewModel = contractViewModel) },
         { CasketShroudStep(viewModel = contractViewModel) },
-        { FoodCateringStep() },
+        { FoodCateringStep(viewModel = contractViewModel) },
         { FuneralContractStep(viewModel = contractViewModel) },
         { CeremonyOrderStep() },
         { FuneraltermsStep(viewModel = contractViewModel) },
@@ -60,19 +67,39 @@ fun ContractScreen(
     // PDF 내보내기 진행 상태
     var isExporting by remember { mutableStateOf(false) }
 
+    // 각 Step의 ScrollState 레지스트리 — PDF 캡처 시 programmatic scroll에 사용
+    val scrollRegistry = remember { ContractScrollRegistry() }
+
+    // 콘텐츠 영역(페이저) 위치 — 닫기 버튼·하단 바 제외
+    var contentTopPx    by remember { mutableIntStateOf(0) }
+    var contentHeightPx by remember { mutableIntStateOf(0) }
+
     Column(modifier = Modifier.fillMaxSize()) {
 
         IconButton(onClick = onDismiss) {
             Icon(imageVector = Icons.Default.Close, contentDescription = "닫기")
         }
 
-        Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
-            UseContractStepContent(
-                pagerState = pagerState,
-                contractSteps = contractSteps,
-                onClose = onDismiss,
-                onFinish = onDismiss
-            )
+        CompositionLocalProvider(
+            LocalScrollStateRegistrar provides { page, state -> scrollRegistry.register(page, state) }
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .onGloballyPositioned { coords ->
+                        contentTopPx    = coords.positionInRoot().y.toInt()
+                        contentHeightPx = coords.size.height
+                    }
+            ) {
+                UseContractStepContent(
+                    pagerState = pagerState,
+                    contractSteps = contractSteps,
+                    onClose = onDismiss,
+                    onFinish = onDismiss,
+                    showHeader = !isExporting,
+                )
+            }
         }
 
         Box(
@@ -103,10 +130,16 @@ fun ContractScreen(
                                 isExporting = true
                                 exportContractPdf(
                                     context = context,
+                                    rootView = view,
                                     pagerState = pagerState,
                                     totalSteps = contractSteps.size,
+                                    deceasedName = contractViewModel.uiState.value.deceasedName,
+                                    contentTopPx = contentTopPx,
+                                    contentHeightPx = contentHeightPx,
+                                    scrollRegistry = scrollRegistry,
                                     onExported = { intent ->
                                         isExporting = false
+                                        contractViewModel.clearData()
                                         if (intent != null) {
                                             context.startActivity(
                                                 Intent.createChooser(intent, "계약서 저장")
@@ -123,15 +156,6 @@ fun ContractScreen(
         }
     }
 
-    // 내보내기 중 로딩 오버레이
-    if (isExporting) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = androidx.compose.ui.Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
-    }
 }
 
 // ── PDF 내보내기 — Pager를 순회하며 각 페이지 캡처 ───────────────────────────
@@ -145,22 +169,43 @@ fun ContractScreen(
  */
 private suspend fun exportContractPdf(
     context: android.content.Context,
+    rootView: android.view.View,
     pagerState: PagerState,
     totalSteps: Int,
+    deceasedName: String = "",
+    contentTopPx: Int = 0,
+    contentHeightPx: Int = 0,
+    scrollRegistry: ContractScrollRegistry,
     onExported: (Intent?) -> Unit
 ) {
     val bitmaps = mutableListOf<android.graphics.Bitmap>()
     val originalPage = pagerState.currentPage
 
     try {
-        // 각 Step으로 이동 후 캡처
+        // 각 Step으로 이동 후 전체 내용 캡처
         for (i in 0 until totalSteps) {
             pagerState.scrollToPage(i)
-            // 렌더링 대기
-            kotlinx.coroutines.delay(300)
-            // 현재 window의 decorView를 캡처
-            val bitmap = PdfCaptureHelper.captureCurrentScreen(context)
-            if (bitmap != null) bitmaps.add(bitmap)
+            kotlinx.coroutines.delay(400)
+
+            val resolvedContentHeight = if (contentHeightPx > 0) contentHeightPx else rootView.height
+            val scrollState = scrollRegistry[i]
+            val bitmap = if (scrollState != null) {
+                // programmatic scroll — 전체 계약서 내용을 정확하게 캡처
+                PdfCaptureHelper.captureWithScrollState(
+                    scrollState     = scrollState,
+                    view            = rootView,
+                    contentTopPx    = contentTopPx,
+                    contentHeightPx = resolvedContentHeight,
+                )
+            } else {
+                // 폴백: 드래그 시뮬레이션 방식
+                PdfCaptureHelper.captureFullScrollContent(
+                    view            = rootView,
+                    contentTopPx    = contentTopPx,
+                    contentHeightPx = resolvedContentHeight,
+                )
+            }
+            bitmaps.add(bitmap)
         }
 
         // 원래 페이지로 복원
@@ -168,12 +213,15 @@ private suspend fun exportContractPdf(
 
         // PDF 생성
         val pdfDocument = android.graphics.pdf.PdfDocument()
+        // 페이지 너비를 A4 폭(595pt)으로 고정하고, 높이는 비트맵 비율에 맞게 계산
+        val pageWidth = 595
         bitmaps.forEachIndexed { index, bitmap ->
+            val scale = pageWidth.toFloat() / bitmap.width
+            val pageHeight = (bitmap.height * scale).toInt().coerceAtLeast(1)
             val pageInfo = android.graphics.pdf.PdfDocument.PageInfo.Builder(
-                595, 842, index + 1
+                pageWidth, pageHeight, index + 1
             ).create()
             val page = pdfDocument.startPage(pageInfo)
-            val scale = minOf(595f / bitmap.width, 842f / bitmap.height)
             val paint = android.graphics.Paint().apply {
                 isAntiAlias = true
                 isFilterBitmap = true
@@ -186,9 +234,12 @@ private suspend fun exportContractPdf(
 
         // PDF 먼저 캐시에 저장 (MediaStore 복사 원본으로 사용)
         val cacheDir = java.io.File(context.cacheDir, "pdf").also { it.mkdirs() }
-        val fileName = "장례계약서_${System.currentTimeMillis()}.pdf"
+        val dateStr = java.text.SimpleDateFormat("yyyyMMdd", java.util.Locale.getDefault())
+            .format(java.util.Date())
+        val namePart = if (deceasedName.isNotBlank()) "_$deceasedName" else ""
+        val fileName = "[장례식장계약서]_${dateStr}${namePart}.pdf"
         val cacheFile = java.io.File(cacheDir, fileName)
-        pdfDocument.writeTo(java.io.FileOutputStream(cacheFile))
+        java.io.FileOutputStream(cacheFile).use { pdfDocument.writeTo(it) }
 
         // ── 저장 경로 — 태블릿 파일 앱 Downloads 에서 바로 확인 가능 ──────────
         val outputFile = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {

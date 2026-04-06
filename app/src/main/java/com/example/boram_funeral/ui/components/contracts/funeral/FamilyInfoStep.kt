@@ -5,6 +5,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalPageIndex
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalScrollStateRegistrar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -36,11 +38,16 @@ fun FamilyInfoStep(viewModel: ContractViewModel) {
     val uiState by viewModel.uiState.collectAsState()
     val ticks = uiState.familyTicks
 
+    val pageIndex = LocalPageIndex.current
+    val registerScrollState = LocalScrollStateRegistrar.current
+    val scrollState = rememberScrollState()
+    LaunchedEffect(Unit) { registerScrollState(pageIndex, scrollState) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(ColorBg)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState)
             .padding(horizontal = 20.dp, vertical = 20.dp)
     ) {
 

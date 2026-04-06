@@ -513,10 +513,13 @@ class ContractViewModel : ViewModel() {
 
         Log.d("ContractSave", "================================")
 
+        onSuccess()
+    }
+
+    /** PDF 저장 완료 후 호출 — 상태 초기화 */
+    fun clearData() {
         _uiState.value = ContractUiState(
             year = Calendar.getInstance().get(Calendar.YEAR).toString()
         )
-
-        onSuccess()
     }
 }

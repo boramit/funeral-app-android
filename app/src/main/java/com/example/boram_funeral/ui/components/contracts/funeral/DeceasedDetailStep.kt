@@ -7,6 +7,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalPageIndex
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalScrollStateRegistrar
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,13 +30,18 @@ fun DeceasedDetailStep(viewModel: ContractViewModel) {
     // Path는 안드로이드 객체라 ViewModel에 넣을 수 없으므로 remember로 유지
     var signatureData by remember { mutableStateOf<Path?>(null) }
 
+    val pageIndex = LocalPageIndex.current
+    val registerScrollState = LocalScrollStateRegistrar.current
+    val scrollState = rememberScrollState()
+    LaunchedEffect(Unit) { registerScrollState(pageIndex, scrollState) }
+
     Column(
         modifier = Modifier.fillMaxSize().imePadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(0.8f).verticalScroll(rememberScrollState()),
+            modifier = Modifier.fillMaxWidth().verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(48.dp))

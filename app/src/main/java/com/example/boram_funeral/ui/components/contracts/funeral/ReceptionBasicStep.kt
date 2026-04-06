@@ -4,6 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.LaunchedEffect
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalPageIndex
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalScrollStateRegistrar
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,7 +22,6 @@ import com.example.boram_funeral.R
 import com.example.boram_funeral.ui.components.contracts.funeral.base.InputCell
 import com.example.boram_funeral.ui.components.contracts.funeral.base.LabelCell
 import com.example.boram_funeral.ui.components.contracts.funeral.base.SelectCell
-import com.example.boram_funeral.ui.screens.contract.logic.ContractUiState
 import com.example.boram_funeral.ui.screens.contract.logic.ContractViewModel
 import com.example.boram_funeral.ui.screens.contract.model.ContractData
 
@@ -28,6 +30,11 @@ fun ReceptionBasicStep(viewModel: ContractViewModel) {
 
     // ViewModel의 상태를 구독 — 값이 바뀌면 자동으로 화면 재구성
     val uiState by viewModel.uiState.collectAsState()
+
+    val pageIndex = LocalPageIndex.current
+    val registerScrollState = LocalScrollStateRegistrar.current
+    val scrollState = rememberScrollState()
+    LaunchedEffect(Unit) { registerScrollState(pageIndex, scrollState) }
 
     Column(
         modifier = Modifier
@@ -38,7 +45,7 @@ fun ReceptionBasicStep(viewModel: ContractViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -65,7 +72,7 @@ fun ReceptionBasicStep(viewModel: ContractViewModel) {
             Spacer(modifier = Modifier.height(100.dp))
 
             Column(
-                modifier = Modifier.fillMaxWidth(0.8f),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 // ── 부고사유 / 행사형태 ───────────────────────────────────

@@ -3,11 +3,14 @@ package com.example.boram_funeral.ui.components.contracts.funeral
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalPageIndex
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalScrollStateRegistrar
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -30,28 +33,30 @@ fun CasketShroudStep(viewModel: ContractViewModel) {
     // ViewModel 상태 구독 — remember 변수 제거
     val uiState by viewModel.uiState.collectAsState()
 
-    LazyColumn(
+    val pageIndex = LocalPageIndex.current
+    val registerScrollState = LocalScrollStateRegistrar.current
+    val scrollState = rememberScrollState()
+    LaunchedEffect(Unit) { registerScrollState(pageIndex, scrollState) }
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        item {
-            Column(modifier = Modifier.fillMaxWidth(0.8f)) {
-                Text("장례서비스 이용 내역")
-            }
+        Column(modifier = Modifier.fillMaxWidth(0.8f)) {
+            Text("장례서비스 이용 내역")
         }
-        item {
-            Column(modifier = Modifier.fillMaxWidth(0.8f)) {
-                FuneralTable(
-                    leftItems  = uiState.leftItems,
-                    rightItems = uiState.rightItems,
-                    onLeftQuantityChange  = { name, qty -> viewModel.updateLeftItemQuantity(name, qty) },
-                    onRightQuantityChange = { name, qty -> viewModel.updateRightItemQuantity(name, qty) },
-                    onRightRemarksChange  = { name, rem -> viewModel.updateRightItemRemarks(name, rem) },
-                )
-            }
+        Column(modifier = Modifier.fillMaxWidth(0.8f)) {
+            FuneralTable(
+                leftItems  = uiState.leftItems,
+                rightItems = uiState.rightItems,
+                onLeftQuantityChange  = { name, qty -> viewModel.updateLeftItemQuantity(name, qty) },
+                onRightQuantityChange = { name, qty -> viewModel.updateRightItemQuantity(name, qty) },
+                onRightRemarksChange  = { name, rem -> viewModel.updateRightItemRemarks(name, rem) },
+            )
         }
     }
 }

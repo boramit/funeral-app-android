@@ -7,7 +7,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalPageIndex
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalScrollStateRegistrar
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
@@ -29,108 +32,48 @@ import androidx.compose.ui.unit.sp
 import com.example.boram_funeral.R
 import com.example.boram_funeral.ui.components.contracts.funeral.base.SignatureArea
 import com.example.boram_funeral.ui.components.contracts.funeral.base.TableHeaderCell
-
-// 1. 데이터 모델 정의
-data class FoodServiceItem(
-    val category: String? = null,     // 구분 (국, 반찬류 등)
-    val name: String,                // 품명
-    val origin: String = "",         // 원산지
-    val unit: String,                // 단위
-    val price: String,               // 가격
-    val isHeader: Boolean = false,
-    val isYellowHeader: Boolean = false,
-    val isReadOnly: Boolean = false,
-    val remarks: MutableState<String> = mutableStateOf("") // 비고란
-)
-
-data class ServiceItem(
-    val category: String,       // 종류 (예: "초배상", "상 식", "노 제")
-    val priceLevels: List<PriceDetail> = emptyList(), // 상, 중 등 가격 리스트
-    val flatPrice: String? = null, // 단일 가격이나 수식이 필요한 경우 (예: "50,000 x ( )회")
-    val totalAmount: String = "",  // 금액 칸 내용
-    val isHeaderStyle: Boolean = false // 합계 행처럼 강조가 필요한 경우
-)
-
-data class PriceDetail(
-    val level: String,  // "上", "中"
-    val price: String   // "400,000"
-)
+import com.example.boram_funeral.ui.screens.contract.logic.ContractViewModel
+import com.example.boram_funeral.ui.screens.contract.model.FoodCategoryItem
+import com.example.boram_funeral.ui.screens.contract.model.FoodServiceItem
+import com.example.boram_funeral.ui.screens.contract.model.PriceDetail
 
 @Composable
-fun FoodCateringStep() {
-    val FoodItems = remember {
-        mutableStateListOf(
-            FoodServiceItem(category = "밥", name = "밥(국내산)", unit = "50인분(5kg)", price = "60,000", origin = "쌀(국내산)"),
-            FoodServiceItem(category = "국", name = "얼갈이된장국", unit = "50인분", price = "175,000", origin = "얼갈이(국내산)"),
-            FoodServiceItem(category = "국", name = "북어국", unit = "50인분", price = "175,000", origin = "북어(러시아)"),
-            FoodServiceItem(category = "국", name = "소고기 무국", unit = "50인분", price = "190,000", origin = "소고기(호주산)"),
-            FoodServiceItem(category = "국", name = "육개장", unit = "50인분", price = "190,000", origin = "소고기(호주), 고추가루,고사리(중국)"),
-            FoodServiceItem(category = "무침", name = "가오리 무침", unit = "(3kg)", price = "150,000", origin = "가오리(남미)"),
-            FoodServiceItem(category = "찜", name = "코다리찜", unit = "(4kg)", price = "110,000", origin = "북어(러시아)"),
-            FoodServiceItem(category = "강정", name = "명태 강정", unit = "(2kg)", price = "130,000", origin = "북어(러시아)"),
-            FoodServiceItem(category = "반찬류", name = "모듬전 (동태전,부추전,해물전)", unit = "(4kg)", price = "130,000", origin = "동태(러시아), 야채(국내산,수입산), 해물(수입산)"),
-            FoodServiceItem(category = "반찬류", name = "고추멸치볶음", unit = "(2kg)", price = "100,000", origin = "가이리멸치(국내산)"),
-            FoodServiceItem(category = "반찬류", name = "수육", unit = "(8kg)(40인분)", price = "360,000", origin = "돼지고기(국내산)"),
-            FoodServiceItem(category = "반찬류", name = "매실장아찌", unit = "(2kg)", price = "80,000", origin = "매실(국내산)"),
-            FoodServiceItem(category = "반찬류", name = "콩나물무침", unit = "(3kg)", price = "50,000", origin = "콩(수입산)"),
-            FoodServiceItem(category = "반찬류", name = "김치", unit = "(5kg)", price = "60,000", origin = "배추(국내산), 고추가루(국내산)"),
-            FoodServiceItem(category = "반찬류", name = "샐러드", unit = "(3kg)", price = "80,000", origin = "사과(국내산)"),
-            FoodServiceItem(category = "반찬류", name = "새우젓", unit = "(1kg)", price = "20,000", origin = "새우(중국산)"),
-            )
-    }
-    val serviceItems = listOf(
-        ServiceItem(
-            category = "초배상",
-            priceLevels = listOf(PriceDetail("上", "400,000"), PriceDetail("中", "300,000"))
-        ),
-        ServiceItem(
-            category = "성복제",
-            priceLevels = listOf(PriceDetail("上", "650,000"), PriceDetail("中", "450,000"))
-        ),
-        ServiceItem(
-            category = "발인제",
-            priceLevels = listOf(PriceDetail("上", "650,000"), PriceDetail("中", "450,000"))
-        ),
-        ServiceItem(
-            category = "상 식",
-            flatPrice = "50,000 x (      )회"
-        ),
-        ServiceItem(
-            category = "노 제",
-            priceLevels = listOf(PriceDetail("上", "650,000"), PriceDetail("中", "450,000"))
-        ),
-        ServiceItem(
-            category = "위령제,산신제",
-            flatPrice = "기본 200,000" // 이미지 하단 '기본'과 '200,000' 병합 구조 대응
-        )
-    )
-    LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(vertical = 16.dp),
+fun FoodCateringStep(
+    viewModel: ContractViewModel
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+
+    val pageIndex = LocalPageIndex.current
+    val registerScrollState = LocalScrollStateRegistrar.current
+    val scrollState = rememberScrollState()
+    LaunchedEffect(Unit) { registerScrollState(pageIndex, scrollState) }
+
+    val FoodItems = uiState.foodItems
+    val serviceItems = uiState.foodCategoryItems
+    Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // 로고 및 주문번호 섹션 (기존 코드 유지)
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(0.8f).padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_funeral_logo_uijeongbu),
-                    contentDescription = "Logo",
-                    modifier = Modifier.width(250.dp).height(50.dp),
-                    contentScale = ContentScale.Fit
-                )
-                Text("주문번호 : 900", fontSize = 14.sp, color = Color(0xFF05195F))
-            }
+        // 로고 및 주문번호 섹션
+        Row(
+            modifier = Modifier.fillMaxWidth(0.8f).padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_funeral_logo_uijeongbu),
+                contentDescription = "Logo",
+                modifier = Modifier.width(250.dp).height(50.dp),
+                contentScale = ContentScale.Fit
+            )
+            Text("주문번호 : 900", fontSize = 14.sp, color = Color(0xFF05195F))
         }
 
         // 테이블 섹션
-        item {
-            Column(modifier = Modifier.fillMaxWidth(0.8f)) {
-                FoodTable(FoodItems)
-                SignatureTable(serviceItems)
-            }
+        Column(modifier = Modifier.fillMaxWidth(0.8f)) {
+            FoodTable(FoodItems)
+            SignatureTable(serviceItems)
         }
     }
 }
@@ -390,7 +333,7 @@ fun RowScope.TableRemarksColumn(
 
 
 @Composable
-fun SignatureTable(items: List<ServiceItem>) {
+fun SignatureTable(items: List<FoodCategoryItem>) {
     Column(modifier = Modifier.fillMaxWidth()) {
 
         // [1] 헤더 영역 (종류, 가격, 금액, 확인)
@@ -450,7 +393,7 @@ fun SignatureTable(items: List<ServiceItem>) {
 }
 
 @Composable
-fun ServiceDataRow(item: ServiceItem) {
+fun ServiceDataRow(item: FoodCategoryItem) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

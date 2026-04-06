@@ -26,8 +26,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.CompositionLocalProvider
 import com.example.boram_funeral.ui.components.common.Button.ButtonSize
 import com.example.boram_funeral.ui.components.common.Button.CustomButton
+import com.example.boram_funeral.ui.screens.contract.pdf.LocalPageIndex
 import com.example.boram_funeral.ui.theme.boram_Br_Color
 import kotlinx.coroutines.launch
 
@@ -93,22 +95,28 @@ fun UseContractStepContent(
     contractSteps: List<@Composable () -> Unit>,
     onClose: () -> Unit,
     onFinish: () -> Unit,
-
+    showHeader: Boolean = true,
 ) {
     // 2. 전체 레이아웃 (Scaffold를 컴포넌트 내부에서 사용하여 상하단 고정)
     Column(modifier = Modifier.fillMaxSize()) {
-        // 커스텀 헤더 (Scaffold 대신 직접 구현하여 충돌 방지)
-        ContractStepHeader(
-            progress = (pagerState.currentPage + 1).toFloat() / contractSteps.size
-        )
+        // 캡처 중에는 헤더를 숨겨 PDF에 포함되지 않도록 함
+        if (showHeader) {
+            ContractStepHeader(
+                progress = (pagerState.currentPage + 1).toFloat() / contractSteps.size
+            )
+        }
 
         // 메인 컨텐츠 (Pager)
+        // beyondViewportPageCount: 모든 페이지를 컴포지션에 유지 → 서명 등 remember 상태 보존
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxWidth().weight(1f),
             userScrollEnabled = false,
+            beyondViewportPageCount = contractSteps.size,
         ) { page ->
-            contractSteps[page].invoke()
+            CompositionLocalProvider(LocalPageIndex provides page) {
+                contractSteps[page].invoke()
+            }
         }
     }
 }

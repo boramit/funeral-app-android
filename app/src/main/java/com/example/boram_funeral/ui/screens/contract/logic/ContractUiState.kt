@@ -2,11 +2,16 @@ package com.example.boram_funeral.ui.screens.contract.logic
 
 import com.example.boram_funeral.ui.screens.contract.model.ContractData
 import com.example.boram_funeral.ui.screens.contract.model.FamilyTicks
+import com.example.boram_funeral.ui.screens.contract.model.FoodCategoryItem
+import com.example.boram_funeral.ui.screens.contract.model.FoodServiceItem
 import com.example.boram_funeral.ui.screens.contract.model.FuneralItem
 import com.example.boram_funeral.ui.screens.contract.model.FuneralServiceItem
+import com.example.boram_funeral.ui.screens.contract.model.PriceDetail
 import com.example.boram_funeral.ui.screens.contract.model.RoomPriceItem
 import com.example.boram_funeral.ui.screens.contract.model.ServiceItem
 import com.example.boram_funeral.ui.screens.contract.model.SurvivorRowTick
+import com.example.boram_funeral.ui.screens.contract.model.defaultFoodCategoryItems
+import com.example.boram_funeral.ui.screens.contract.model.defaultFoodItems
 import com.example.boram_funeral.ui.screens.contract.model.defaultFuneralItems
 import com.example.boram_funeral.ui.screens.contract.model.defaultLeftItems
 import com.example.boram_funeral.ui.screens.contract.model.defaultRightItems
@@ -139,8 +144,11 @@ data class ContractUiState(
     // =========================================================================
     // Step 3 — FoodCateringStep (음식/케이터링)
     // =========================================================================
-    // TODO: FoodCateringStep 코드 확인 후 필드 추가 예정
-    // val cateringMemo: String = "",
+
+    /** 음식 품목 리스트 (밥, 국, 무침, 찜, 강정, 반찬류) */
+    val foodItems: List<FoodServiceItem> = defaultFoodItems(),
+    /** 제례 서비스 항목 리스트 (초배상, 성복제, 발인제, 상식, 노제, 위령제) */
+    val foodCategoryItems: List<FoodCategoryItem> = defaultFoodCategoryItems(),
 
 
     // =========================================================================

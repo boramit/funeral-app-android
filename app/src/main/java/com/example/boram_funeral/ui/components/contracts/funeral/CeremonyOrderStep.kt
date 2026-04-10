@@ -5,9 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,11 +14,15 @@ import com.example.boram_funeral.ui.screens.contract.pdf.LocalScrollStateRegistr
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+// ── 색상 ──────────────────────────────────────────────────────────────────────
+private val COLOR_BRAND  = Color(0xFF05195F)
+private val COLOR_HEADER = Color(0xFFF5F5F5)
+private val COLOR_BORDER = Color(0xFFD1D1D1)
 
 // ── 데이터 ────────────────────────────────────────────────────────────────────
 
@@ -117,25 +119,6 @@ private val notices = listOf(
     "본 장례식장을 통해 장례서비스를 이용받기를 원하시는 고객님께서는, 계약체결을 담당하는 직원에게 문의하여 주시기 바랍니다."
 )
 
-// ── 색상 ──────────────────────────────────────────────────────────────────────
-
-private val ColorHeader     = Color(0xFF5B9BD5)
-private val ColorRowEven    = Color(0xFFFFFFFF)
-private val ColorRowOdd     = Color(0xFFF0F4FA)
-private val ColorDivider    = Color(0xFFCCCCCC)
-private val ColorTitle      = Color(0xFF1A1A2E)
-private val ColorText       = Color(0xFF333333)
-private val ColorNote       = Color(0xFF555555)
-private val ColorNoticeBg   = Color(0xFFFFF8E1)
-private val ColorNoticeTitle= Color(0xFF795548)
-private val ColorNoticeText = Color(0xFF5D4037)
-private val ColorBg           = Color(0xFFF5F5F5)
-private val ColorFlowHeader   = Color(0xFF1C2D6E)
-private val ColorFlowBox      = Color(0xFFFFFFFF)
-private val ColorFlowBorder   = Color(0xFF888888)
-private val ColorFlowArrow    = Color(0xFF444444)
-private val ColorFlowMiddleBg = Color(0xFFF5CBA7)
-
 // ── 메인 Composable ───────────────────────────────────────────────────────────
 
 @Composable
@@ -147,40 +130,58 @@ fun CeremonyOrderStep() {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .verticalScroll(scrollState)
-            .padding(16.dp)
+            .padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // 제목
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White)
-                .padding(vertical = 12.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "장례의식 순서",
-                style = TextStyle(
-                    color = ColorTitle,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+        Column(modifier = Modifier.fillMaxWidth()) {
+
+            // ── 타이틀 ────────────────────────────────────────────────────────
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "장례의식 순서",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = COLOR_BRAND
                 )
-            )
+            }
+
+            // ── 테이블 ────────────────────────────────────────────────────────
+            CeremonyTable()
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // ── 진행 절차 타이틀 ──────────────────────────────────────────────
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "장례의식의 진행 절차",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = COLOR_BRAND
+                )
+            }
+
+            // ── 진행 절차 플로우차트 ───────────────────────────────────────────
+            CeremonyFlowSection()
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // ── 주의사항 ──────────────────────────────────────────────────────
+            NoticeSection()
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
-
-        // 테이블
-        CeremonyTable()
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // 진행 절차 플로우차트
-        CeremonyFlowSection()
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // 주의사항
-        NoticeSection()
     }
 }
 
@@ -190,55 +191,55 @@ fun CeremonyOrderStep() {
 private fun CeremonyTable() {
     val mergedNote = ceremonyData.firstOrNull { it.note.isNotEmpty() }?.note ?: ""
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(ColorRowEven, RoundedCornerShape(8.dp))
-    ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         // 헤더
-        TableHeader()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(COLOR_HEADER)
+                .border(0.5.dp, COLOR_BORDER),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CeremonyHeaderCell("구분",         weight = 1f)
+            CeremonyHeaderCell("주요업무(약식)", weight = 2.5f)
+            CeremonyHeaderCell("비고",         weight = 2f)
+        }
 
-        Divider(color = ColorDivider, thickness = 1.dp)
-
-        // 본문: 구분+주요업무 열 / 비고 열(병합)
+        // 본문
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min)
+                .border(0.5.dp, COLOR_BORDER)
         ) {
-            // 좌측: 구분 + 주요업무 (행별 분리)
+            // 좌측: 구분 + 주요업무
             Column(modifier = Modifier.weight(3.5f)) {
                 ceremonyData.forEachIndexed { index, item ->
-                    TableDataRow(item = item, index = index)
+                    TableDataRow(item = item)
                     if (index < ceremonyData.lastIndex) {
-                        Divider(color = ColorDivider, thickness = 1.dp)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(0.5.dp)
+                                .background(COLOR_BORDER)
+                        )
                     }
                 }
             }
 
-            // 구분선
-            Box(
-                modifier = Modifier
-                    .width(1.dp)
-                    .fillMaxHeight()
-                    .background(ColorDivider)
-            )
-
-            // 우측: 비고 (전체 행 병합)
+            // 우측: 비고 (병합)
             Box(
                 modifier = Modifier
                     .weight(2f)
                     .fillMaxHeight()
-                    .background(
-                        color = ColorRowEven,
-                        shape = RoundedCornerShape(bottomEnd = 8.dp)
-                    )
+                    .border(0.5.dp, COLOR_BORDER)
                     .padding(horizontal = 10.dp, vertical = 12.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = mergedNote,
-                    style = TextStyle(color = ColorNote, fontSize = 12.sp),
+                    fontSize = 12.sp,
+                    color = Color(0xFF333333),
                     lineHeight = 18.sp
                 )
             }
@@ -247,48 +248,30 @@ private fun CeremonyTable() {
 }
 
 @Composable
-private fun TableHeader() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(ColorHeader, RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-            .height(IntrinsicSize.Min)
-    ) {
-        HeaderCell(text = "구분", weight = 1f)
-        VerticalDivider()
-        HeaderCell(text = "주요업무(약식)", weight = 2.5f)
-        VerticalDivider()
-        HeaderCell(text = "비고", weight = 2f)
-    }
-}
-
-@Composable
-private fun RowScope.HeaderCell(text: String, weight: Float) {
+private fun RowScope.CeremonyHeaderCell(text: String, weight: Float) {
     Box(
         modifier = Modifier
             .weight(weight)
-            .padding(vertical = 14.dp),
+            .border(0.5.dp, COLOR_BORDER)
+            .padding(vertical = 10.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
-            style = TextStyle(
-                color = Color.White,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
-            )
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold,
+            color = COLOR_BRAND,
+            textAlign = TextAlign.Center
         )
     }
 }
 
 @Composable
-private fun TableDataRow(item: DayItem, index: Int) {
-    val bgColor = if (index % 2 == 0) ColorRowEven else ColorRowOdd
-
+private fun TableDataRow(item: DayItem) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = bgColor)
+            .background(Color.White)
             .height(IntrinsicSize.Min)
     ) {
         // 구분
@@ -296,31 +279,31 @@ private fun TableDataRow(item: DayItem, index: Int) {
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
+                .border(0.5.dp, COLOR_BORDER)
+                .background(COLOR_HEADER)
                 .padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = item.day,
-                style = TextStyle(
-                    color = ColorTitle,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                color = COLOR_BRAND
             )
         }
-
-        VerticalDivider()
 
         // 주요업무
         Column(
             modifier = Modifier
                 .weight(2.5f)
-                .padding(horizontal = 12.dp, vertical = 12.dp)
+                .border(0.5.dp, COLOR_BORDER)
+                .padding(horizontal = 12.dp, vertical = 10.dp)
         ) {
             item.tasks.forEachIndexed { i, task ->
                 Text(
                     text = "${i + 1}. $task",
-                    style = TextStyle(color = ColorText, fontSize = 13.sp),
+                    fontSize = 13.sp,
+                    color = Color(0xFF333333),
                     modifier = Modifier.padding(vertical = 2.dp)
                 )
             }
@@ -333,27 +316,6 @@ private fun TableDataRow(item: DayItem, index: Int) {
 @Composable
 private fun CeremonyFlowSection() {
     Column(modifier = Modifier.fillMaxWidth()) {
-
-        // 제목
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White)
-                .padding(vertical = 12.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "장례의식의 진행 절차",
-                style = TextStyle(
-                    color = ColorTitle,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         // 3열 플로우
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -364,11 +326,11 @@ private fun CeremonyFlowSection() {
             }
         }
 
-        // 첫째 날 → 둘째 날 안내 텍스트
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "※ 첫째 날 하는 경우도 있음",
-            style = TextStyle(color = Color(0xFF888888), fontSize = 11.sp),
+            fontSize = 14.sp,
+            color = Color(0xFF888888),
             modifier = Modifier.padding(start = 4.dp)
         )
     }
@@ -384,21 +346,18 @@ private fun FlowDayColumn(day: FlowDay, modifier: Modifier = Modifier) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(ColorFlowHeader, RoundedCornerShape(4.dp))
+                .background(COLOR_BRAND)
+                .border(0.5.dp, COLOR_BORDER)
                 .padding(vertical = 10.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = day.title,
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
             )
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         // 단계 박스들
         day.steps.forEachIndexed { index, step ->
@@ -412,27 +371,18 @@ private fun FlowDayColumn(day: FlowDay, modifier: Modifier = Modifier) {
 
 @Composable
 private fun FlowStepBox(text: String, isDotted: Boolean) {
-    val borderColor = if (isDotted) Color(0xFFD1D1D1) else ColorFlowBorder
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                color = ColorFlowBox,
-                shape = RoundedCornerShape(4.dp)
-            )
-            .then(
-                if (isDotted) Modifier.dashedBorder(borderColor)
-                else Modifier.border(1.dp, borderColor, RoundedCornerShape(4.dp))
-            )
+            .background(Color.White)
+            .border(0.5.dp, COLOR_BORDER)
             .padding(vertical = 8.dp, horizontal = 6.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
-            style = TextStyle(
-                color = ColorText,
-                fontSize = 12.sp
-            ),
+            fontSize = 14.sp,
+            color = Color(0xFF333333),
             textAlign = TextAlign.Center
         )
     }
@@ -442,18 +392,11 @@ private fun FlowStepBox(text: String, isDotted: Boolean) {
 private fun FlowArrow() {
     Box(
         modifier = Modifier
-            .width(2.dp)
-            .height(16.dp)
-            .background(ColorFlowArrow)
+            .width(1.dp)
+            .height(12.dp)
+            .background(COLOR_BORDER)
     )
 }
-
-// 점선 테두리 Modifier 확장
-private fun Modifier.dashedBorder(color: Color): Modifier = this.then(
-    Modifier.background(Color.Transparent, RoundedCornerShape(4.dp))
-        .padding(1.dp)
-        .background(Color(0xFFFFEBEE), RoundedCornerShape(3.dp))
-)
 
 // ── 주의사항 ──────────────────────────────────────────────────────────────────
 
@@ -462,41 +405,36 @@ private fun NoticeSection() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(ColorNoticeBg, RoundedCornerShape(8.dp))
-            .padding(16.dp)
+            .border(0.5.dp, COLOR_BORDER)
     ) {
-        Text(
-            text = "※ 주의사항 ※",
-            style = TextStyle(
-                color = ColorNoticeTitle,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
-
-        notices.forEachIndexed { i, notice ->
+        // 헤더
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(COLOR_HEADER)
+                .border(0.5.dp, COLOR_BORDER)
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
             Text(
-                text = "${i + 1}. $notice",
-                style = TextStyle(
-                    color = ColorNoticeText,
-                    fontSize = 12.5.sp
-                ),
-                lineHeight = 19.sp,
-                modifier = Modifier.padding(vertical = 4.dp)
+                text = "※ 주의사항",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = COLOR_BRAND
             )
         }
+
+        // 내용
+        Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
+            notices.forEachIndexed { i, notice ->
+                Text(
+                    text = "${i + 1}. $notice",
+                    fontSize = 14.sp,
+                    color = Color(0xFF333333),
+                    lineHeight = 20.sp,
+                    modifier = Modifier.padding(vertical = 3.dp)
+                )
+            }
+        }
     }
-}
-
-// ── 유틸 ──────────────────────────────────────────────────────────────────────
-
-@Composable
-private fun RowScope.VerticalDivider() {
-    Box(
-        modifier = Modifier
-            .width(1.dp)
-            .fillMaxHeight()
-            .background(ColorDivider)
-    )
 }

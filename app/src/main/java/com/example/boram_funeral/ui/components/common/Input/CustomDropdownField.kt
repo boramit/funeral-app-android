@@ -15,15 +15,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,23 +31,24 @@ fun CustomDropdownField(
     label: String,
     options: List<String>,
     selectedOption: String,
-    height: androidx.compose.ui.unit.Dp = 48.dp,
+    height: Dp = 58.dp,
     onOptionSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
-    fontSize: androidx.compose.ui.unit.TextUnit = 13.sp,
+    fontSize: TextUnit = 13.sp,
+    labelFontSize: TextUnit = 16.sp,
     placeholder: String = "선택해주세요.",
-    shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(8.dp),
-    border: BorderStroke? = null
+    shape: Shape = RoundedCornerShape(8.dp),
+    border: BorderStroke? = null,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     val rotateBy by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
-        animationSpec = tween(durationMillis = 300), // 0.3초 동안 부드럽게 회전
+        animationSpec = tween(durationMillis = 300),
         label = "IconRotation"
     )
 
-    Box(modifier = modifier){
+    Box(modifier = modifier) {
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
@@ -56,18 +57,18 @@ fun CustomDropdownField(
                 label = label,
                 value = selectedOption,
                 onValueChange = {},
-                readOnly = true, // 드롭다운이므로 직접 입력 방지
+                readOnly = true,
                 inputModifier = Modifier
                     .menuAnchor()
                     .height(height),
                 fontSize = fontSize,
+                labelFontSize = labelFontSize,
                 placeholder = placeholder,
                 shape = shape,
                 border = border,
                 trailingIcon = {
-                    // 화살표 아이콘
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_down), // 방금 만든 파일
+                        painter = painterResource(id = R.drawable.ic_arrow_down),
                         contentDescription = null,
                         tint = Color.Gray,
                         modifier = Modifier
@@ -77,17 +78,16 @@ fun CustomDropdownField(
                 }
             )
 
-            // 실제 팝업 메뉴
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
                     .graphicsLayer {
-                        shadowElevation = 20f // 그림자 깊이
-                        spotShadowColor = Color(0xFFD1D9E6) // 주 그림자 색상
-                        ambientShadowColor = Color(0xFFD1D9E6).copy(alpha = 0.5f) // 주변광 그림자 색상
-                        this.shape = RoundedCornerShape(8.dp) // 모양 일치
-                        clip = false // 그림자 번짐 허용
+                        shadowElevation = 20f
+                        spotShadowColor = Color(0xFFD1D9E6)
+                        ambientShadowColor = Color(0xFFD1D9E6).copy(alpha = 0.5f)
+                        this.shape = RoundedCornerShape(8.dp)
+                        clip = false
                     }
                     .background(Color.White, shape = RoundedCornerShape(8.dp))
                     .exposedDropdownSize(),
@@ -97,11 +97,9 @@ fun CustomDropdownField(
                 options.forEach { option ->
                     DropdownMenuItem(
                         modifier = Modifier
-                            .fillMaxWidth()           // 가로 꽉 채우기
-                            .padding(horizontal = 8.dp), // 아이템 자체를 안쪽으로 밀어넣기
-                        text = {
-                            Text(text = option, fontSize = fontSize)
-                        },
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                        text = { Text(text = option, fontSize = fontSize) },
                         onClick = {
                             onOptionSelected(option)
                             expanded = false

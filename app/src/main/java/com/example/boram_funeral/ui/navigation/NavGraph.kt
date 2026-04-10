@@ -105,10 +105,20 @@ fun NavGraph() {
         ) { innerPadding ->
             ModalSheet(
                 isOpen = isContractOpen,
-                onDismiss = { sharedContractViewModel.closeContract() },
+                onDismiss = {
+                    sharedContractViewModel.closeContract()
+                    navController.navigate("counsel") {
+                        popUpTo("counsel") { inclusive = false }
+                    }
+                },
             ) {
                 ContractScreen(
-                    onDismiss = { sharedContractViewModel.closeContract() },
+                    onDismiss = {
+                        sharedContractViewModel.closeContract()
+                        navController.navigate("counsel") {
+                            popUpTo("counsel") { inclusive = false }
+                        }
+                    },
                     contractViewModel = sharedContractViewModel,
                 )
             }
@@ -121,7 +131,7 @@ fun NavGraph() {
                 composable("auth") {
                     LoginScreen(
                         onNavigateToMain = {
-                            navController.navigate("home") {
+                            navController.navigate("member") {
                                 popUpTo("auth") { inclusive = true }
                             }
                         }

@@ -9,8 +9,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.Image
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Dialog
 import com.example.boram_funeral.ui.screens.contract.pdf.LocalPageIndex
@@ -73,30 +77,31 @@ fun RowScope.TableCellItem(
         // 이미지 모달 (noModal이면 표시하지 않음)
         if (showImageDialog && !item.noModal) {
             Dialog(onDismissRequest = { showImageDialog = false }) {
-                androidx.compose.material3.Card(
+                Card(
                     shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight()
+                        .wrapContentHeight(),
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
                             text = item.name,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
-                            modifier = Modifier.padding(bottom = 12.dp)
+                            modifier = Modifier.padding(bottom = 12.dp),
                         )
                         if (item.imageResId != null) {
-                            androidx.compose.foundation.Image(
+                            Image(
                                 painter = painterResource(id = item.imageResId),
                                 contentDescription = item.name,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .heightIn(max = 400.dp),
-                                contentScale = androidx.compose.ui.layout.ContentScale.Fit
+                                contentScale = ContentScale.Fit,
                             )
                         }
                     }
@@ -116,7 +121,7 @@ fun RowScope.TableCellItem(
         ) {
             Text(
                 text = item.name,
-                fontSize = 12.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = if (item.imageResId != null && !item.noModal) Color(0xFF1A56DB) else Color.Unspecified
             )
@@ -132,7 +137,7 @@ fun RowScope.TableCellItem(
             contentAlignment = Alignment.CenterEnd
         ) {
             if (item.isReadOnly) {
-                Text(text = item.unit, fontSize = 12.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End, color = Color.DarkGray)
+                Text(text = item.unit, fontSize = 14.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End, color = Color.DarkGray)
             } else {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     BasicTextField(
@@ -144,7 +149,7 @@ fun RowScope.TableCellItem(
                         singleLine = true
                     )
                     if (item.unit.isNotEmpty()) {
-                        Text(text = item.unit, fontSize = 12.sp, modifier = Modifier.padding(start = 2.dp))
+                        Text(text = item.unit, fontSize = 14.sp, modifier = Modifier.padding(start = 2.dp))
                     }
                 }
             }
@@ -171,7 +176,7 @@ fun RowScope.TableCellItem(
                         .padding(8.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
-                    Text(text = if (price.trim().isEmpty()) "" else "${price.trim()}원", fontSize = 12.sp)
+                    Text(text = if (price.trim().isEmpty()) "" else "${price.trim()}원", fontSize = 14.sp)
                 }
             }
         }
@@ -191,7 +196,7 @@ fun RowScope.FullWidthHeaderCell(item: FuneralServiceItem, totalWeight: Float) {
             .border(0.5.dp, Color(0xFFD1D1D1)),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = item.name, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, fontSize = 12.sp, color = Color.Black)
+        Text(text = item.name, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.Black)
     }
 }
 
@@ -288,7 +293,7 @@ fun FuneralTable(
                 Text(
                     text = "※ 임대차 계약 시 사용된 또는 예정된 물품을 기입한 것이며,\n 임차인의 요청에 의하여 추가되는 물품은\n 거래명세서에 기록하여 정산하므로 최종 정산 금액과 다를 수 있음",
                     textAlign = TextAlign.Center,
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     lineHeight = 20.sp,
                     fontWeight = FontWeight.Medium
                 )

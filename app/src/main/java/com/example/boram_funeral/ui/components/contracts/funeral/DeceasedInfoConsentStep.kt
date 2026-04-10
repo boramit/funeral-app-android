@@ -32,12 +32,15 @@ import androidx.compose.ui.unit.sp
 import com.example.boram_funeral.ui.components.contracts.funeral.base.HandwrittenAreaCell
 import com.example.boram_funeral.ui.screens.contract.logic.ContractViewModel
 
+import com.example.boram_funeral.ui.utils.adaptiveFontSize
+import com.example.boram_funeral.ui.utils.adaptiveDp
+
 // ── 색상 ──────────────────────────────────────────────────────────────────────
 
 private val ColorPrimary   = Color(0xFF05195F)
 private val ColorBg        = Color(0xFFF9F9F9)
 private val ColorBorder    = Color(0xFF888888)
-private val ColorTableHead = Color(0xFFEEF2FF)
+private val ColorTableHead = Color(0xFFF5F7FA)
 private val ColorText      = Color(0xFF222222)
 private val ColorSub       = Color(0xFF555555)
 private val ColorNotice    = Color(0xFF888888)
@@ -269,24 +272,25 @@ private fun DeceasedInfoTable(
             Column(
                 modifier = Modifier
                     .weight(3.5f)
-                    .height(IntrinsicSize.Min)
+                    .fillMaxHeight()
             ) {
                 // 헤더 타이틀
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(ColorTableHead)
-                        .padding(vertical = 4.dp),
+                        .fillMaxHeight()
+                        .background(ColorTableHead),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "장사시설 이용일",
                         style = androidx.compose.ui.text.TextStyle(
-                            fontSize = 11.sp,
+                            fontSize = adaptiveFontSize(portrait = 12.sp, landscape = 14.sp),
                             fontWeight = FontWeight.Bold,
                             color = ColorText,
                             textAlign = TextAlign.Center
-                        )
+                        ),
+                        modifier = Modifier.padding(6.dp)
                     )
                 }
             }
@@ -401,7 +405,7 @@ private fun SurvivorTable(
             VLine()
             HeaderCell("주소", 2.5f)
             VLine()
-            HeaderCell("정보제공에 동의함 (성명 또는 인)", 2f)
+            HeaderCell("정보제공에 동의함 (성명 또는 인)", 2.5f)
         }
 
         // 유족 3행
@@ -442,7 +446,7 @@ private fun SurvivorTable(
                 VLine()
                 HandwrittenCell(
                     tick = row.signatureTick,
-                    weight = 2f,
+                    weight = 2.5f,
                     height = 56.dp,
                     onDraw = { viewModel.tickSurvivorSignature(idx) }
                 )
@@ -502,7 +506,7 @@ private fun DateTripleCell(
                 onDraw = onYearDraw
             )
         }
-        Text("년", fontSize = 10.sp, color = ColorSub, modifier = Modifier.padding(horizontal = 2.dp))
+        Text("년", fontSize = 12.sp, color = ColorSub, modifier = Modifier.padding(horizontal = 2.dp))
 
         // 월
         Box(modifier = Modifier.weight(0.5f).height(42.dp)) {
@@ -512,7 +516,7 @@ private fun DateTripleCell(
                 onDraw = onMonthDraw
             )
         }
-        Text("월", fontSize = 10.sp, color = ColorSub, modifier = Modifier.padding(horizontal = 2.dp))
+        Text("월", fontSize = 12.sp, color = ColorSub, modifier = Modifier.padding(horizontal = 2.dp))
 
         // 일
         Box(modifier = Modifier.weight(0.5f).height(42.dp)) {
@@ -522,12 +526,12 @@ private fun DateTripleCell(
                 onDraw = onDayDraw
             )
         }
-        Text("일", fontSize = 10.sp, color = ColorSub, modifier = Modifier.padding(start = 2.dp))
+        Text("일", fontSize = 12.sp, color = ColorSub, modifier = Modifier.padding(start = 2.dp))
         // 부터 / 까지 등 라벨
         if (label.isNotEmpty()) {
             Text(
                 text = " $label",
-                fontSize = 9.sp,
+                fontSize = 12.sp,
                 color = ColorSub,
                 modifier = Modifier.padding(start = 2.dp)
             )
@@ -542,11 +546,11 @@ private fun InfoItem(label: String, value: String) {
     Row(modifier = Modifier.padding(bottom = 4.dp)) {
         Text(
             text = "$label : ",
-            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold, color = ColorPrimary)
+            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = ColorPrimary)
         )
         Text(
             text = value,
-            style = TextStyle(fontSize = 12.sp, color = ColorText, lineHeight = 19.sp)
+            style = TextStyle(fontSize = 14.sp, color = ColorText, lineHeight = 19.sp)
         )
     }
 }
@@ -556,7 +560,7 @@ private fun SectionTitle(text: String) {
     Text(
         text = text,
         style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = ColorPrimary),
-        modifier = Modifier.padding(bottom = 6.dp)
+        modifier = Modifier.padding(bottom = 8.dp)
     )
 }
 
@@ -565,7 +569,7 @@ private fun RowScope.HeaderCell(text: String, weight: Float) {
     Text(
         text = text,
         style = TextStyle(
-            fontSize = 11.sp,
+            fontSize = adaptiveFontSize(portrait = 12.sp, landscape = 14.sp),
             fontWeight = FontWeight.Bold,
             color = ColorText,
             textAlign = TextAlign.Center

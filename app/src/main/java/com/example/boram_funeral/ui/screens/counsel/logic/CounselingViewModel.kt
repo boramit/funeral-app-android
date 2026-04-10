@@ -2,6 +2,8 @@ package com.example.boram_funeral.ui.screens.counsel.logic
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.boram_funeral.ui.screens.counsel.model.FuneralHomeOption
+import com.example.boram_funeral.ui.screens.counsel.model.funeralHomeList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -13,7 +15,7 @@ class CounselingViewModel : ViewModel() {
 
     val counselingTypeOptions = listOf("현장상담", "유선상담", "기타")
     val relationshipOptions   = listOf("부부", "자식", "형제", "자매", "어머니")
-    val funeralHomeOptions    = listOf("보람의정부장례식장", "보람세민에스장례식장", "보람인천장례식장")
+    val funeralHomeOptions: List<FuneralHomeOption> = funeralHomeList
     val eventTypeOptions      = listOf("자체 행사", "외부 행사", "기타")
     val religionTypeOptions   = listOf("기독교", "불교", "천주교", "무교", "개신교", "원불교", "기타")
 

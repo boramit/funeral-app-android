@@ -18,6 +18,7 @@ data class CounselUiState(
     val selectedDate: String = "",
     val selectedTime: String = "",
     val selectedFuneral: String = "",
+    val selectedFuneralId: Int = 0,
 
     // 상단 배너 / 행사 요약 표시용
     val affiliate: String = "",         // 계열사
@@ -37,7 +38,7 @@ data class CounselUiState(
 
 data class CounselingUiState(
     // ① 기본 정보
-    val counselingNo: String = "20240304-001",
+    val counselingNo: String = "",
     val counselingType: String = "",
     val customerName: String = "",
     val phoneNumber: String = "",
@@ -45,6 +46,7 @@ data class CounselingUiState(
 
     // ② 행사 상세
     val funeralHome: String = "",
+    val funeralHomeId: Int = 0,
     val eventType: String = "",
     val patientName: String = "",
     val age: String = "",

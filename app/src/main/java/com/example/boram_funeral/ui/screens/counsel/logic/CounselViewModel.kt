@@ -8,6 +8,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.boram_funeral.data.counsel.CounselRepository
 import com.example.boram_funeral.data.counsel.model.CounselRequest
+import com.example.boram_funeral.ui.screens.counsel.model.FuneralHomeOption
+import com.example.boram_funeral.ui.screens.counsel.model.funeralHomeList
 import com.example.boram_funeral.util.AudioRecorder
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +33,7 @@ class CounselViewModel : ViewModel() {
     private var recorder: AudioRecorder? = null
     private var audioFile: File? = null
 
-    val funeralOptions = listOf("보람의정부장례식장", "보람세민에스장례식장", "보람인천장례식장")
+    val funeralOptions: List<FuneralHomeOption> = funeralHomeList
 
     fun updateField(transform: (CounselUiState) -> CounselUiState) {
         _uiState.update(transform)

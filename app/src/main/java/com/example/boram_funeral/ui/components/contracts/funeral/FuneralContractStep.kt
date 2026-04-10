@@ -17,7 +17,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.boram_funeral.ui.components.contracts.funeral.base.InputCell
-import com.example.boram_funeral.ui.components.contracts.funeral.base.LabelCell
 import com.example.boram_funeral.ui.components.contracts.funeral.base.MiniInputCell
 import com.example.boram_funeral.ui.screens.contract.logic.ContractViewModel
 import androidx.compose.ui.graphics.Path
@@ -27,15 +26,20 @@ import com.example.boram_funeral.ui.screens.contract.model.FuneralItem
 import java.text.NumberFormat
 import java.util.Locale
 
+// 다른 계약서 공통 색상
+private val COLOR_BRAND   = Color(0xFF05195F)   // 브랜드 다크 네이비
+private val COLOR_HEADER  = Color(0xFFF5F5F5)   // 헤더/레이블 배경
+private val COLOR_BORDER  = Color(0xFFD1D1D1)   // 테두리
+private val COLOR_ACCENT  = Color(0xFFE1E9F5)   // 강조 셀 (최종합계)
+
 @Composable
 fun FuneralContractStep(viewModel: ContractViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // 서명 상태 — Path는 ViewModel에 넣을 수 없으므로 remember로 관리
-    var showSettingSignDialog  by remember { mutableStateOf(false) }
-    var showReturnSignDialog   by remember { mutableStateOf(false) }
-    var settingSignature       by remember { mutableStateOf<Path?>(null) }
-    var returnSignature        by remember { mutableStateOf<Path?>(null) }
+    var showSettingSignDialog by remember { mutableStateOf(false) }
+    var showReturnSignDialog  by remember { mutableStateOf(false) }
+    var settingSignature      by remember { mutableStateOf<Path?>(null) }
+    var returnSignature       by remember { mutableStateOf<Path?>(null) }
 
     val pageIndex = LocalPageIndex.current
     val registerScrollState = LocalScrollStateRegistrar.current
@@ -46,8 +50,7 @@ fun FuneralContractStep(viewModel: ContractViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -55,15 +58,14 @@ fun FuneralContractStep(viewModel: ContractViewModel) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White)
                     .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = "매점용품리스트",
-                    fontSize = 16.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1A237E)
+                    color = COLOR_BRAND
                 )
             }
 
@@ -72,7 +74,8 @@ fun FuneralContractStep(viewModel: ContractViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(IntrinsicSize.Min)
-                    .border(0.5.dp, Color(0xFFD1D1D1))
+                    .border(0.5.dp, COLOR_BORDER),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 // 빈소
                 Row(
@@ -80,8 +83,8 @@ fun FuneralContractStep(viewModel: ContractViewModel) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text("빈 소 :", fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                    Text(uiState.roomName, fontSize = 12.sp)
+                    Text("빈소 :", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = COLOR_BRAND)
+                    Text(uiState.roomName, fontSize = 16.sp)
                 }
                 // 고인명
                 Row(
@@ -89,8 +92,8 @@ fun FuneralContractStep(viewModel: ContractViewModel) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text("故 :", fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                    Text(uiState.deceasedName, fontSize = 12.sp)
+                    Text("故 :", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = COLOR_BRAND)
+                    Text(uiState.deceasedName, fontSize = 16.sp)
                 }
                 // 일자
                 Row(
@@ -98,16 +101,16 @@ fun FuneralContractStep(viewModel: ContractViewModel) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text("일 자 :", fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                    Text(uiState.year + "년", fontSize = 12.sp)
-                    MiniInputCell(value = uiState.contractStartMonth, onValueChange = viewModel::updateContractStartMonth, width = 30.dp)
-                    Text("월", fontSize = 12.sp)
-                    MiniInputCell(value = uiState.contractStartDay, onValueChange = viewModel::updateContractStartDay, width = 30.dp)
-                    Text("일 ~", fontSize = 12.sp)
-                    MiniInputCell(value = uiState.contractEndMonth, onValueChange = viewModel::updateContractEndMonth, width = 30.dp)
-                    Text("월", fontSize = 12.sp)
-                    MiniInputCell(value = uiState.contractEndDay, onValueChange = viewModel::updateContractEndDay, width = 30.dp)
-                    Text("일", fontSize = 12.sp)
+                    Text("일 자 :", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = COLOR_BRAND)
+                    Text(uiState.year + "년", fontSize = 16.sp)
+                    MiniInputCell(value = uiState.contractStartMonth, onValueChange = viewModel::updateContractStartMonth, width = 28.dp)
+                    Text("월", fontSize = 16.sp)
+                    MiniInputCell(value = uiState.contractStartDay, onValueChange = viewModel::updateContractStartDay, width = 28.dp)
+                    Text("일 ~", fontSize = 16.sp)
+                    MiniInputCell(value = uiState.contractEndMonth, onValueChange = viewModel::updateContractEndMonth, width = 28.dp)
+                    Text("월", fontSize = 16.sp)
+                    MiniInputCell(value = uiState.contractEndDay, onValueChange = viewModel::updateContractEndDay, width = 28.dp)
+                    Text("일", fontSize = 16.sp)
                 }
             }
 
@@ -115,34 +118,31 @@ fun FuneralContractStep(viewModel: ContractViewModel) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFFFFF9C4))
-                    .border(0.5.dp, Color(0xFFD1D1D1))
+                    .border(0.5.dp, COLOR_BORDER)
                     .padding(horizontal = 12.dp, vertical = 6.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "※ 음료, 주류는 낱개반품가능 그외의 잡화는 개봉시 반품불가입니다.",
-                    fontSize = 11.sp,
-                    color = Color(0xFF5D4037)
+                    fontSize = 12.sp,
+                    color = COLOR_BRAND
                 )
-                Text("(인)", fontSize = 11.sp, color = Color(0xFF5D4037))
             }
 
             // ── 테이블 헤더 ───────────────────────────────────────────────────
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFFE8EAF6))
-                    .border(0.5.dp, Color(0xFFD1D1D1)),
+                    .background(COLOR_HEADER)
+                    .border(0.5.dp, COLOR_BORDER),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TableHeaderCell("번호",   weight = 0.5f)
-                TableHeaderCell("품명", weight = 2f)
-                TableHeaderCell("단가",  weight = 1f)
-                TableHeaderCell("셋팅수량", weight = 0.8f)
-                TableHeaderCell("반품수량", weight = 0.8f)
-                TableHeaderCell("금액",  weight = 1.2f)
+                ContractHeaderCell("번호",     weight = 0.5f)
+                ContractHeaderCell("품명",     weight = 2f)
+                ContractHeaderCell("단가",     weight = 1f)
+                ContractHeaderCell("셋팅수량", weight = 0.8f)
+                ContractHeaderCell("반품수량", weight = 0.8f)
+                ContractHeaderCell("금액",     weight = 1.2f)
             }
 
             // ── 품목 리스트 ───────────────────────────────────────────────────
@@ -154,23 +154,20 @@ fun FuneralContractStep(viewModel: ContractViewModel) {
             }
 
             // ── 합계 / 서명 행 ────────────────────────────────────────────────
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(IntrinsicSize.Min)
-            ) {
-                // 셋팅확인 서명 + 반품확인 서명
+            Row(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.weight(3f)) {
                     // 셋팅확인
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(IntrinsicSize.Min)
-                            .border(0.5.dp, Color(0xFFD1D1D1))
+                            .height(60.dp)
+                            .border(0.5.dp, COLOR_BORDER)
                     ) {
                         Box(
                             modifier = Modifier
-                                .background(Color(0xFFF5F5F5))
+                                .fillMaxHeight()
+                                .background(COLOR_HEADER)
+                                .border(0.5.dp, COLOR_BORDER)
                                 .padding(horizontal = 8.dp, vertical = 6.dp),
                             contentAlignment = Alignment.Center
                         ) {
@@ -178,18 +175,21 @@ fun FuneralContractStep(viewModel: ContractViewModel) {
                         }
                         SignatureArea(
                             label = "셋팅확인",
-                            modifier = Modifier.weight(1f).height(60.dp),
+                            modifier = Modifier.weight(1f).fillMaxHeight(),
                         )
                     }
                     // 반품확인
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(IntrinsicSize.Min)
+                            .height(60.dp)
+                            .border(0.5.dp, COLOR_BORDER)
                     ) {
                         Box(
                             modifier = Modifier
-                                .background(Color(0xFFF5F5F5))
+                                .fillMaxHeight()
+                                .background(COLOR_HEADER)
+                                .border(0.5.dp, COLOR_BORDER)
                                 .padding(horizontal = 8.dp, vertical = 6.dp),
                             contentAlignment = Alignment.Center
                         ) {
@@ -197,7 +197,7 @@ fun FuneralContractStep(viewModel: ContractViewModel) {
                         }
                         SignatureArea(
                             label = "반품확인",
-                            modifier = Modifier.weight(1f).height(60.dp),
+                            modifier = Modifier.weight(1f).fillMaxHeight(),
                         )
                     }
                 }
@@ -205,53 +205,118 @@ fun FuneralContractStep(viewModel: ContractViewModel) {
                 Column(
                     modifier = Modifier
                         .weight(2f)
-                        .fillMaxHeight()
-                        .border(0.5.dp, Color(0xFFD1D1D1)),
+                        .height(120.dp)
+                        .border(0.5.dp, COLOR_BORDER),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("합  계", fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Text("합  계", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = COLOR_BRAND)
+                    Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = formatWon(uiState.totalAmount),
-                        fontSize = 13.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1A237E)
+                        color = COLOR_BRAND
                     )
                 }
             }
 
-            // ── 반품 차감 / 최종 합계 ─────────────────────────────────────────
+            // ── 금액 합계 정보 ────────────────────────────────────────────────
+            // 셋팅 합계
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF1A237E))
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .height(IntrinsicSize.Min)
+                    .border(0.5.dp, COLOR_BORDER)
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        Text("셋팅 합계", color = Color(0xFFB0BEC5), fontSize = 13.sp)
-                        Text(formatWon(uiState.settingAmount), color = Color.White, fontSize = 13.sp)
-                    }
-                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        Text("반품 차감", color = Color(0xFFFFCC80), fontSize = 13.sp)
-                        Text("- ${formatWon(uiState.returnAmount)}", color = Color(0xFFFF8A65), fontSize = 13.sp)
-                    }
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .background(COLOR_HEADER)
+                        .border(0.5.dp, COLOR_BORDER)
+                        .padding(horizontal = 8.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("셋팅 합계", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
-                Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.Center) {
-                    Text("최종 합계", color = Color.White, fontSize = 13.sp)
+                Box(
+                    modifier = Modifier
+                        .weight(2f)
+                        .fillMaxHeight()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Text(formatWon(uiState.settingAmount), fontSize = 13.sp)
+                }
+            }
+            // 반품 차감
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+                    .border(0.5.dp, COLOR_BORDER)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .background(COLOR_HEADER)
+                        .border(0.5.dp, COLOR_BORDER)
+                        .padding(horizontal = 8.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("반품 차감", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                }
+                Box(
+                    modifier = Modifier
+                        .weight(2f)
+                        .fillMaxHeight()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Text("- ${formatWon(uiState.returnAmount)}", fontSize = 13.sp)
+                }
+            }
+            // 최종 합계
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+                    .border(0.5.dp, COLOR_BORDER)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .background(COLOR_ACCENT)
+                        .border(0.5.dp, COLOR_BORDER)
+                        .padding(horizontal = 8.dp, vertical = 10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("최종 합계", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = COLOR_BRAND)
+                }
+                Box(
+                    modifier = Modifier
+                        .weight(2f)
+                        .fillMaxHeight()
+                        .background(COLOR_ACCENT)
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
                     Text(
                         text = formatWon(uiState.totalAmount),
-                        color = Color(0xFFFFD54F),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = COLOR_BRAND
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
-    // ── 셋팅확인 서명 다이얼로그 ─────────────────────────────────────────────
+
     if (showSettingSignDialog) {
         SignatureDialog(
             onDismiss = { showSettingSignDialog = false },
@@ -261,8 +326,6 @@ fun FuneralContractStep(viewModel: ContractViewModel) {
             }
         )
     }
-
-    // ── 반품확인 서명 다이얼로그 ─────────────────────────────────────────────
     if (showReturnSignDialog) {
         SignatureDialog(
             onDismiss = { showReturnSignDialog = false },
@@ -274,19 +337,19 @@ fun FuneralContractStep(viewModel: ContractViewModel) {
     }
 }
 
-// ─── 테이블 헤더 셀 ─────────────────────────────────────────────────────────── ───────────────────────────────────────────────────────────
+// ── 테이블 헤더 셀 ───────────────────────────────────────────────────────────
 @Composable
-private fun RowScope.TableHeaderCell(text: String, weight: Float) {
+private fun RowScope.ContractHeaderCell(text: String, weight: Float) {
     Box(
         modifier = Modifier
             .weight(weight)
-            .border(0.5.dp, Color(0xFFD1D1D1))
+            .border(0.5.dp, COLOR_BORDER)
             .padding(vertical = 6.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
-            color = Color(0xFF1A237E),
+            color = COLOR_BRAND,
             fontWeight = FontWeight.Bold,
             fontSize = 11.sp,
             textAlign = TextAlign.Center
@@ -294,15 +357,12 @@ private fun RowScope.TableHeaderCell(text: String, weight: Float) {
     }
 }
 
-// ─── 품목 행 ──────────────────────────────────────────────────────────────────
+// ── 품목 행 ──────────────────────────────────────────────────────────────────
 @Composable
 private fun FuneralItemRow(
     item: FuneralItem,
     onReturnQtyChange: (Int) -> Unit
 ) {
-    val isReturned = item.returnQuantity > 0
-    val rowBg = if (isReturned) Color(0xFFFFF3E0) else Color.White
-
     var inputText by remember(item.returnQuantity) {
         mutableStateOf(if (item.returnQuantity == 0) "" else item.returnQuantity.toString())
     }
@@ -311,7 +371,7 @@ private fun FuneralItemRow(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .background(rowBg),
+            .background(Color.White),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // 번호
@@ -319,55 +379,55 @@ private fun FuneralItemRow(
             modifier = Modifier
                 .weight(0.5f)
                 .fillMaxHeight()
-                .border(0.5.dp, Color(0xFFE0E0E0)),
+                .border(0.5.dp, COLOR_BORDER),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = item.number.toString(), fontSize = 11.sp, color = Color(0xFF757575))
+            Text(item.number.toString(), fontSize = 16.sp, color = Color.Black)
         }
         // 품명
         Box(
             modifier = Modifier
                 .weight(2f)
                 .fillMaxHeight()
-                .border(0.5.dp, Color(0xFFE0E0E0))
+                .border(0.5.dp, COLOR_BORDER)
                 .padding(horizontal = 8.dp, vertical = 6.dp),
             contentAlignment = Alignment.CenterStart
         ) {
-            Text(text = item.name, fontSize = 12.sp)
+            Text(item.name, fontSize = 16.sp)
         }
         // 단가
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .border(0.5.dp, Color(0xFFE0E0E0))
+                .border(0.5.dp, COLOR_BORDER)
                 .padding(horizontal = 6.dp),
             contentAlignment = Alignment.CenterEnd
         ) {
-            Text(text = formatWon(item.unitPrice), fontSize = 11.sp, color = Color(0xFF424242))
+            Text(formatWon(item.unitPrice), fontSize = 16.sp, color = Color.Black)
         }
-        // 셋팅수량 — 고정
+        // 셋팅수량
         Box(
             modifier = Modifier
                 .weight(0.8f)
                 .fillMaxHeight()
-                .background(Color(0xFFECEFF1))
-                .border(0.5.dp, Color(0xFFE0E0E0)),
+                .background(COLOR_HEADER)
+                .border(0.5.dp, COLOR_BORDER),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = item.settingQuantity.toString(),
-                fontSize = 12.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1A237E)
+                color = COLOR_BRAND
             )
         }
-        // 반품수량 — 입력
+        // 반품수량
         Box(
             modifier = Modifier
                 .weight(0.8f)
                 .fillMaxHeight()
-                .border(0.5.dp, if (isReturned) Color(0xFFFF9800) else Color(0xFFE0E0E0)),
+                .border(0.5.dp, COLOR_BORDER),
             contentAlignment = Alignment.Center
         ) {
             MiniInputCell(
@@ -385,20 +445,19 @@ private fun FuneralItemRow(
             modifier = Modifier
                 .weight(1.2f)
                 .fillMaxHeight()
-                .border(0.5.dp, Color(0xFFE0E0E0))
+                .border(0.5.dp, COLOR_BORDER)
                 .padding(horizontal = 6.dp),
             contentAlignment = Alignment.CenterEnd
         ) {
             Text(
                 text = formatWon(item.amount),
-                fontSize = 11.sp,
-                color = if (isReturned) Color(0xFF388E3C) else Color(0xFF212121),
-                fontWeight = if (isReturned) FontWeight.Bold else FontWeight.Normal
+                fontSize = 16.sp,
+                color = Color.Black
             )
         }
     }
 }
 
-// ─── 유틸 ─────────────────────────────────────────────────────────────────────
+// ── 유틸 ─────────────────────────────────────────────────────────────────────
 private fun formatWon(amount: Long): String =
     NumberFormat.getNumberInstance(Locale.KOREA).format(amount) + "원"

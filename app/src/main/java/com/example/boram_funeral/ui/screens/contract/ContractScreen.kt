@@ -1,6 +1,7 @@
 package com.example.boram_funeral.ui.screens.contract
 
 import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -9,12 +10,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import com.example.boram_funeral.ui.components.common.Button.ButtonSize
@@ -22,6 +28,7 @@ import com.example.boram_funeral.ui.components.common.Button.CustomButton
 import com.example.boram_funeral.ui.components.contracts.funeral.*
 import com.example.boram_funeral.ui.screens.contract.logic.ContractViewModel
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.focus.focusModifier
 import com.example.boram_funeral.ui.screens.contract.pdf.ContractPdfExporter
 import com.example.boram_funeral.ui.screens.contract.pdf.ContractScrollRegistry
 import com.example.boram_funeral.ui.screens.contract.pdf.LocalIsPdfCapturing
@@ -75,10 +82,13 @@ fun ContractScreen(
     var contentTopPx    by remember { mutableIntStateOf(0) }
     var contentHeightPx by remember { mutableIntStateOf(0) }
 
+    Box(modifier = Modifier.fillMaxSize()) {
     Column(modifier = Modifier.fillMaxSize()) {
 
-        IconButton(onClick = onDismiss) {
-            Icon(imageVector = Icons.Default.Close, contentDescription = "닫기")
+        Box(modifier = Modifier.align(Alignment.End) ){
+            IconButton(onClick = onDismiss) {
+                Icon(imageVector = Icons.Default.Close, contentDescription = "닫기")
+            }
         }
 
         CompositionLocalProvider(
@@ -155,6 +165,34 @@ fun ContractScreen(
                     }
                 }
             )
+        }
+    }
+
+    } // Box 닫기
+
+    if (isExporting) {
+        Dialog(
+            onDismissRequest = {},
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false,
+                usePlatformDefaultWidth = false
+            )
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    CircularProgressIndicator()
+                    Text("저장중입니다...", fontSize = 16.sp, color = Color.Gray)
+                }
+            }
         }
     }
 

@@ -36,7 +36,7 @@ fun BasicInfoComponent(
             Text(
                 modifier = Modifier.width(120.dp),
                 text = "기본 정보",
-                fontSize = 15.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF333333),
             )
@@ -51,10 +51,10 @@ fun BasicInfoComponent(
                             value = counselingNo,
                             onValueChange = {},
                             readOnly = true, // 상담번호는 보통 자동생성되므로 읽기전용
-                            height = 38.dp
+                            height = 48.dp
                         )
                     }
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(20.dp))
                     Box(modifier = Modifier.weight(1f)){
                         // 2. 상담고객 (핵심 정보 - 1단 강조)
                         CustomTextField(
@@ -62,10 +62,10 @@ fun BasicInfoComponent(
                             value = customerName,
                             onValueChange = onNameChange,
                             placeholder = "고객명을 입력하세요.",
-                            height = 38.dp
+                            height = 48.dp
                         )
                     }
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(20.dp))
                     Box(modifier = Modifier.weight(1f)){
                         // 3. 연락처 (데이터가 길 수 있어 1단 권장)
                         CustomTextField(
@@ -73,13 +73,13 @@ fun BasicInfoComponent(
                             value = phoneNumber,
                             onValueChange = onPhoneChange,
                             placeholder = "010-0000-0000",
-                            height = 38.dp
+                            height = 48.dp
                         )
                     }
                 }
 
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 // 4. 상담유형 & 관계 (짧은 항목들 - 2단 배치)
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -90,7 +90,7 @@ fun BasicInfoComponent(
                             selectedOption = counselingType,
                             onOptionSelected = onTypeChange,
                             placeholder = "선택",
-                            height = 38.dp
+                            height = 48.dp
 
                         )
                     }
@@ -102,7 +102,7 @@ fun BasicInfoComponent(
                             selectedOption = relationship,
                             onOptionSelected = onRelationshipChange,
                             placeholder = "선택",
-                            height = 38.dp
+                            height = 48.dp
                         )
                     }
                 }

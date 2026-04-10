@@ -6,6 +6,7 @@ import com.example.boram_funeral.ui.screens.contract.model.ContractData
 import com.example.boram_funeral.ui.screens.contract.model.FamilyTicks
 import com.example.boram_funeral.ui.screens.contract.model.RoomType
 import com.example.boram_funeral.ui.screens.contract.model.SurvivorRowTick
+import com.example.boram_funeral.ui.screens.contract.model.defaultFoodItems
 import com.example.boram_funeral.ui.screens.contract.model.defaultRoomPriceItems
 import com.example.boram_funeral.ui.screens.contract.model.defaultServiceItems
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +41,29 @@ class ContractViewModel : ViewModel() {
         _uiState.value = transform(_uiState.value)
     }
 
+    /** 음식 품목 단위/가격 변경 — FoodOptionModal에서 옵션 선택 시 호출 */
+    fun updateFoodItemPrice(
+        item: com.example.boram_funeral.ui.screens.contract.model.FoodServiceItem,
+        option: com.example.boram_funeral.ui.screens.contract.model.FoodItemOption,
+    ) {
+        updateField { state ->
+            state.copy(
+                foodItems = state.foodItems.map {
+                    if (it === item) it.copy(unit = option.unit, price = option.price) else it
+                }
+            )
+        }
+    }
+
+    /** 제례 서비스 항목 상/중 선택 */
+    fun updateFoodCategoryLevel(category: String, level: String?) {
+        _uiState.value = _uiState.value.copy(
+            foodCategoryItems = _uiState.value.foodCategoryItems.map { item ->
+                if (item.category == category) item.copy(selectedLevel = level) else item
+            }
+        )
+    }
+
     // =========================================================================
     // Step 0 — ReceptionBasicStep (접수 기본 정보)
     // =========================================================================
@@ -67,7 +91,7 @@ class ContractViewModel : ViewModel() {
             )
         }
 
-    /** 장례식장 선택 — 빈소 옵션 / 호실 데이터 / 부대시설 단가 자동 교체 */
+    /** 장례식장 선택 — 빈소 옵션 / 호실 데이터 / 부대시설 단가 / 음식 목록 자동 교체 */
     fun updateFuneralHome(funeralHome: ContractData) =
         updateField { state ->
             state.copy(
@@ -75,12 +99,47 @@ class ContractViewModel : ViewModel() {
                 roomOptions         = funeralHome.roomOptions,
                 roomPriceItems      = defaultRoomPriceItems(funeralHome),
                 serviceItems        = defaultServiceItems(),
+                foodItems           = defaultFoodItems(funeralHome),
             )
         }
 
     /** 외부 ViewModel에서 장례식장명(String)으로 전달받을 때 사용 */
     fun updateFuneralHomeByName(name: String) =
         updateFuneralHome(ContractData.fromDisplayName(name))
+
+    /** 외부 ViewModel에서 장례식장 ID(Int)로 전달받을 때 사용 */
+    fun updateFuneralHomeById(id: Int) =
+        updateFuneralHome(ContractData.fromId(id))
+
+    /**
+     * 상담 화면에서 입력된 데이터를 계약서 초기값으로 채움.
+     * 날짜 형식: "yyyy-MM-dd" (DatePickerField 반환값)
+     */
+    fun prefillFromCounsel(
+        deceasedName: String,
+        funeralHomeName: String,
+        chiefMourner: String,
+        burialDate: String,    // 안치일시
+        checkInDate: String,   // 입실일시
+        departureDate: String, // 발인일시
+    ) {
+        if (deceasedName.isNotBlank()) updateDeceasedName(deceasedName)
+        if (funeralHomeName.isNotBlank()) updateFuneralHomeByName(funeralHomeName)
+        if (chiefMourner.isNotBlank()) updateChiefMourner(chiefMourner)
+
+        burialDate.split("-").takeIf { it.size == 3 }?.let {
+            updateMortuaryMonth(it[1])
+            updateMortuaryDay(it[2])
+        }
+        checkInDate.split("-").takeIf { it.size == 3 }?.let {
+            updateCheckInMonth(it[1])
+            updateCheckInDay(it[2])
+        }
+        departureDate.split("-").takeIf { it.size == 3 }?.let {
+            updateDepartureMonth(it[1])
+            updateDepartureDay(it[2])
+        }
+    }
 
     /** 상주명 입력 */
     fun updateChiefMourner(value: String) =
@@ -109,17 +168,17 @@ class ContractViewModel : ViewModel() {
     fun updateGender(value: String) = updateField { it.copy(gender = value) }
     fun updateReligion(value: String) = updateField { it.copy(religion = value) }
     fun updateBaptismalName(value: String) = updateField { it.copy(baptismalName = value) }
-    fun updateJumin(value: String) = updateField { it.copy(jumin = value) }
+    fun updateJumin(value: String) = updateField { it.copy(jumin = formatJumin(value)) }
     fun updateAddress(value: String) = updateField { it.copy(address = value) }
     fun updateDeathPlace(value: String) = updateField { it.copy(deathPlace = value) }
     fun updateDeathDateTime(value: String) = updateField { it.copy(deathDateTime = value) }
 
     /** 임차인(계약자) 정보 */
     fun updateContractorName(value: String) = updateField { it.copy(contractorName = value) }
-    fun updateContractorJumin(value: String) = updateField { it.copy(contractorJumin = value) }
+    fun updateContractorJumin(value: String) = updateField { it.copy(contractorJumin = formatJumin(value)) }
     fun updateContractorRelation(value: String) = updateField { it.copy(contractorRelation = value) }
-    fun updateContractorHomeTel(value: String) = updateField { it.copy(contractorHomeTel = value) }
-    fun updateContractorMobile(value: String) = updateField { it.copy(contractorMobile = value) }
+    fun updateContractorHomeTel(value: String) = updateField { it.copy(contractorHomeTel = formatHomeTel(value)) }
+    fun updateContractorMobile(value: String) = updateField { it.copy(contractorMobile = formatPhone(value)) }
     fun updateContractorAddress(value: String) = updateField { it.copy(contractorAddress = value) }
 
     /** 계약기간 — 년도는 공통, 시작/종료 월일 분리 */
@@ -526,6 +585,33 @@ class ContractViewModel : ViewModel() {
         Log.d("ContractSave", "================================")
 
         onSuccess()
+    }
+
+    // ── 포맷 헬퍼 ─────────────────────────────────────────────────────────────
+    /** 주민번호: 숫자만 추출 후 000000-0000000 형식으로 변환 (최대 13자리) */
+    private fun formatJumin(input: String): String {
+        val digits = input.filter { it.isDigit() }.take(13)
+        return if (digits.length > 6) "${digits.take(6)}-${digits.drop(6)}" else digits
+    }
+
+    /** 휴대폰: 숫자만 추출 후 000-0000-0000 형식으로 변환 (최대 11자리) */
+    private fun formatPhone(input: String): String {
+        val digits = input.filter { it.isDigit() }.take(11)
+        return when {
+            digits.length > 7 -> "${digits.take(3)}-${digits.substring(3, 7)}-${digits.drop(7)}"
+            digits.length > 3 -> "${digits.take(3)}-${digits.drop(3)}"
+            else -> digits
+        }
+    }
+
+    /** 집전화: 숫자만 추출 후 000-000-0000 형식으로 변환 (최대 10자리) */
+    private fun formatHomeTel(input: String): String {
+        val digits = input.filter { it.isDigit() }.take(10)
+        return when {
+            digits.length > 6 -> "${digits.take(3)}-${digits.substring(3, 6)}-${digits.drop(6)}"
+            digits.length > 3 -> "${digits.take(3)}-${digits.drop(3)}"
+            else -> digits
+        }
     }
 
     /** PDF 저장 완료 후 호출 — 상태 초기화 */

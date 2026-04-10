@@ -2,6 +2,7 @@ package com.example.boram_funeral.ui.components.contracts.funeral
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.LaunchedEffect
@@ -36,147 +37,146 @@ fun ReceptionBasicStep(viewModel: ContractViewModel) {
     val scrollState = rememberScrollState()
     LaunchedEffect(Unit) { registerScrollState(pageIndex, scrollState) }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .imePadding()
+            .verticalScroll(scrollState),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .verticalScroll(scrollState),
+                .padding(horizontal = 20.dp, vertical = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
-            // 로고 + 타이틀
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Spacer(modifier = Modifier.height(60.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.ic_funeral_logo_uijeongbu),
-                    contentDescription = "Boram Logo",
-                    modifier = Modifier.width(300.dp).height(58.dp),
-                    contentScale = ContentScale.Fit
+            // ── 로고 + 타이틀 ─────────────────────────────────────────
+            Image(
+                painter = painterResource(id = uiState.selectedFuneralHome.logoResId),
+                contentDescription = "Boram Logo",
+                modifier = Modifier.width(300.dp).height(58.dp),
+                contentScale = ContentScale.Fit
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "장례식장 이용계약서",
+                style = TextStyle(
+                    color = Color(0xFF05195F),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
                 )
-                Spacer(modifier = Modifier.height(28.dp))
-                Text(
-                    text = "장례식장 이용계약서",
-                    style = TextStyle(
-                        color = Color(0xFF05195F),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
-                )
-            }
+            )
 
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(32.dp))
+            HorizontalDivider(color = Color(0xFF05195F), thickness = 1.5.dp)
+            Spacer(modifier = Modifier.height(24.dp))
 
+            // ── 입력 폼 ───────────────────────────────────────────────
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                // ── 부고사유 / 행사형태 ───────────────────────────────────
+                // 부고사유 / 행사형태
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Box(modifier = Modifier.weight(1f)) {
-                        Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-                            LabelCell("부고사유")
+                        Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+                            LabelCell("부고사유", height = 58.dp,)
                             SelectCell(
                                 selectedOption = uiState.deathReason,
                                 onOptionSelected = viewModel::updateDeathReason,
                                 options = listOf("병사", "외인사", "자연사", "미상", "기타", "코로나"),
                                 weight = 3f,
+                                height = 58.dp,
                                 placeholder = "선택"
                             )
                         }
                     }
                     Box(modifier = Modifier.weight(1f)) {
-                        Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-                            LabelCell("행사형태")
+                        Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+                            LabelCell("행사형태", height = 58.dp,)
                             SelectCell(
                                 selectedOption = uiState.eventType,
                                 onOptionSelected = viewModel::updateEventType,
                                 options = listOf("자체 행사", "타상조 행사", "보람그룹 행사", "무빈소 행사", "대관 행사"),
                                 weight = 3f,
+                                height = 58.dp,
                                 placeholder = "선택"
                             )
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // ── 유입경로 ─────────────────────────────────────────────
-                Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-                    LabelCell("유입경로")
+                // 유입경로
+                Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+                    LabelCell("유입경로", height = 58.dp)
                     InputCell(
                         value = uiState.inflowPath,
                         onValueChange = viewModel::updateInflowPath,
                         weight = 3f,
+                        height = 58.dp,
                         placeholder = "경로 입력",
                         alignment = Alignment.CenterStart
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-                    LabelCell("장례식장")
+                // 장례식장
+                Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+                    LabelCell("장례식장",height = 58.dp,)
                     SelectCell(
                         selectedOption = uiState.selectedFuneralHome.displayName,
-                        onOptionSelected = { name ->
-                            viewModel.updateFuneralHomeByName(name)
-                        },
+                        onOptionSelected = { name -> viewModel.updateFuneralHomeByName(name) },
                         options = ContractData.displayNames(),
                         weight = 3f,
+                        height = 58.dp,
                         placeholder = "장례식장 선택"
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // ── 빈소 ─────────────────────────────────────────────────
-                Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-                    LabelCell("빈소")
+                // 빈소
+                Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+                    LabelCell("빈소", height = 58.dp,)
                     SelectCell(
                         selectedOption = uiState.roomName,
                         onOptionSelected = viewModel::updateRoomName,
-                        options = uiState.roomOptions,  // 장례식장 선택 시 자동 교체
+                        options = uiState.roomOptions,
                         weight = 3f,
+                        height = 58.dp,
                         placeholder = "빈소 선택"
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // ── 상주명 / 고인명 / 지도사명 ───────────────────────────
-                Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-                    LabelCell("상주명")
+                // 상주명 / 고인명 / 지도사명
+                Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+                    LabelCell("상주명", height = 58.dp)
                     InputCell(
                         value = uiState.chiefMourner,
                         onValueChange = viewModel::updateChiefMourner,
                         weight = 2f,
+                        height = 58.dp,
                         alignment = Alignment.CenterStart
                     )
-                    LabelCell("고인명")
+                    LabelCell("고인명", height = 58.dp)
                     InputCell(
-                        // Step 0에서 입력한 고인명이 Step 1, Step 4 에서도 동일하게 표시됨
                         value = uiState.deceasedName,
                         onValueChange = viewModel::updateDeceasedName,
                         weight = 2f,
+                        height = 58.dp,
                         alignment = Alignment.CenterStart
                     )
-                    LabelCell("지도사명")
+                    LabelCell("지도사명", height = 58.dp)
                     InputCell(
                         value = uiState.directorName,
                         onValueChange = viewModel::updateDirectorName,
                         weight = 2f,
+                        height = 58.dp,
                         alignment = Alignment.CenterStart
                     )
                 }
             }
+
         }
     }
 }

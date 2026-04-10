@@ -136,7 +136,7 @@ fun FuneraltermsStep(
                 Text(
                     text = article,
                     style = TextStyle(
-                        fontSize = 13.sp,
+                        fontSize = 14.sp,
                         color = Color(0xFF222222),
                         lineHeight = 22.sp
                     ),

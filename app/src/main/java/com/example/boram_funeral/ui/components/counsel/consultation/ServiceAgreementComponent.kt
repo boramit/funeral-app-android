@@ -41,7 +41,7 @@ fun ServiceAgreementComponent(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
+                .height(240.dp)
                 .background(Color(0xFFF9F9F9), shape = RoundedCornerShape(8.dp))
                 .border(1.dp, Color(0xFFEEEEEE), shape = RoundedCornerShape(8.dp))
                 .padding(12.dp)
@@ -59,9 +59,9 @@ fun ServiceAgreementComponent(
                         회사는 계약된 패키지에 따라 장례 용품 및 인력을 제공하며...
                         (상세 내용 생략)
                     """.trimIndent(),
-                    fontSize = 13.sp,
+                    fontSize = 16.sp,
                     color = Color(0xFF666666),
-                    lineHeight = 20.sp
+                    lineHeight = 24.sp
                 )
             }
         }
@@ -70,13 +70,13 @@ fun ServiceAgreementComponent(
             // 3. 이용계약서
             Button(
                 onClick = { onOpenContract() },
-                modifier = Modifier.width(200.dp).height(48.dp),
+                modifier = Modifier.width(240.dp).height(56.dp),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF333333)
                 )
             ) {
-                Text("계약서 작성하기", color = Color.White)
+                Text("계약서 작성하기", color = Color.White, fontSize = 16.sp)
             }
         }
     }

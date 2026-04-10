@@ -1,5 +1,7 @@
 package com.example.boram_funeral.ui.screens.contract.model
 
+import com.example.boram_funeral.R
+
 // ─── 장례서비스 품목 데이터 (CasketShroudStep) ───────────────────────────────
 data class FuneralServiceItem(
     val name: String,
@@ -105,23 +107,100 @@ fun getRoomType(roomName: String): RoomType =
 
 // ─── 장례식장 Enum ────────────────────────────────────────────────────────────
 enum class ContractData(
+    val id: Int,
     val displayName: String,
     val roomOptions: List<String>,
+    val logoResId: Int,
 ) {
     UIJEONGBU(
+        id = 1,
         displayName = "보람의정부장례식장",
         roomOptions = listOf("특실", "201호실", "202호실", "203호실", "VIP호실", "VVIP호실", "VIP+VVIP호실"),
+        logoResId = R.drawable.ic_funeral_logo_uijeongbu,
     ),
-    SEMIN(
-        displayName = "보람세민에스장례식장",
-        roomOptions = listOf("1호실", "2호실", "3호실"),   // TODO: 실제 데이터로 교체
+    CHANGWON(
+        id = 2,
+        displayName = "창원경상대병원장례식장",
+        roomOptions = listOf("1호실", "2호실", "3호실", "4호실"),   // TODO: 실제 데이터로 교체
+        logoResId = R.drawable.ic_funeral_logo_changwon_gnu,
     ),
     INCHEON(
+        id = 3,
         displayName = "보람인천장례식장",
-        roomOptions = listOf("A호실", "B호실", "C호실"),   // TODO: 실제 데이터로 교체
+        roomOptions = listOf("A호실", "B호실", "C호실"),             // TODO: 실제 데이터로 교체
+        logoResId = R.drawable.ic_funeral_logo_uijeongbu,           // TODO: 전용 로고 파일로 교체
+    ),
+    GIMHAE(
+        id = 5,
+        displayName = "보람김해장례식장",
+        roomOptions = listOf("1호실", "2호실", "3호실"),             // TODO: 실제 데이터로 교체
+        logoResId = R.drawable.ic_funeral_logo_uijeongbu,           // TODO: 전용 로고 파일로 교체
+    ),
+    DAEDONG(
+        id = 6,
+        displayName = "대동병원장례식장",
+        roomOptions = listOf("1호실", "2호실", "3호실", "4호실"),   // TODO: 실제 데이터로 교체
+        logoResId = R.drawable.ic_funeral_logo_daedong,
+    ),
+    YANGSAN(
+        id = 7,
+        displayName = "양산부산대학교장례식장",
+        roomOptions = listOf("1호실", "2호실", "3호실"),             // TODO: 실제 데이터로 교체
+        logoResId = R.drawable.ic_funeral_logo_yangsan_pnu,
+    ),
+    CHEONAN(
+        id = 8,
+        displayName = "천안국빈장례식장",
+        roomOptions = listOf("1호실", "2호실", "3호실", "4호실"),   // TODO: 실제 데이터로 교체
+        logoResId = R.drawable.ic_funeral_logo_cheonan_gukbin,
+    ),
+    YEOJU(
+        id = 9,
+        displayName = "여주장례식장",
+        roomOptions = listOf("1호실", "2호실", "3호실"),             // TODO: 실제 데이터로 교체
+        logoResId = R.drawable.ic_funeral_logo_yeoju,
+    ),
+    SAECHEONNYEON(
+        id = 10,
+        displayName = "새천년장례식장",
+        roomOptions = listOf("1호실", "2호실", "3호실", "4호실"),   // TODO: 실제 데이터로 교체
+        logoResId = R.drawable.ic_funeral_logo_new_millennium,
+    ),
+    DONGRAE(
+        id = 11,
+        displayName = "동래봉생병원sky장례식장",
+        roomOptions = listOf("1호실", "2호실", "3호실"),             // TODO: 실제 데이터로 교체
+        logoResId = R.drawable.ic_funeral_logo_sky_boram,
+    ),
+    YEOSU(
+        id = 12,
+        displayName = "보람여수장례식장",
+        roomOptions = listOf("1호실", "2호실", "3호실"),             // TODO: 실제 데이터로 교체
+        logoResId = R.drawable.ic_funeral_logo_uijeongbu,           // TODO: 전용 로고 파일로 교체
+    ),
+    SEMIN(
+        id = 13,
+        displayName = "보람세민에스장례식장",
+        roomOptions = listOf("1호실", "2호실", "3호실"),             // TODO: 실제 데이터로 교체
+        logoResId = R.drawable.ic_funeral_logo_semins,
+    ),
+    YEOJU_GUKBIN(
+        id = 14,
+        displayName = "여주국빈장례식장",
+        roomOptions = listOf("1호실", "2호실", "3호실"),             // TODO: 실제 데이터로 교체
+        logoResId = R.drawable.ic_funeral_logo_yeoju_gukbin,
+    ),
+    JWACHEON(
+        id = 15,
+        displayName = "좌천봉생병원장례식장",
+        roomOptions = listOf("1호실", "2호실", "3호실"),             // TODO: 실제 데이터로 교체
+        logoResId = R.drawable.ic_funeral_logo_bongsaeng,
     );
 
     companion object {
+        fun fromId(id: Int): ContractData =
+            entries.find { it.id == id } ?: UIJEONGBU
+
         fun fromDisplayName(name: String): ContractData =
             entries.find { it.displayName == name } ?: UIJEONGBU
 
@@ -139,13 +218,9 @@ fun defaultRoomPriceItems(funeralHome: ContractData = ContractData.UIJEONGBU) = 
         RoomPriceItem("VVIP호실",     "140석", "136평형",  "60,000원", "1,440,000원"),
         RoomPriceItem("VIP+VVIP호실", "270석", "270평형", "100,000원", "2,400,000원"),
     )
-    ContractData.SEMIN -> listOf(
+    else -> listOf(
         // TODO: 실제 데이터로 교체
         RoomPriceItem("1호실", "50석", "45평형", "20,000원", "480,000원"),
-    )
-    ContractData.INCHEON -> listOf(
-        // TODO: 실제 데이터로 교체
-        RoomPriceItem("A호실", "60석", "55평형", "30,000원", "720,000원"),
     )
 }
 

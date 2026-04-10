@@ -87,8 +87,8 @@ fun CounselScreen(
                             "상담 정보와 오디오 파일이 안전하게 저장되었습니다!",
                             android.widget.Toast.LENGTH_SHORT
                         ).show()
-                        navController.navigate("home") {
-                            popUpTo("home") { inclusive = true }
+                        navController.navigate("member") {
+                            popUpTo("member") { inclusive = true }
                         }
                     }
                 })
@@ -118,7 +118,18 @@ fun CounselScreen(
                 when (index) {
                     0 -> CounselingTabContent(viewModel = counselingViewModel)
                     1 -> ConsultationScreenContent(
-                        onOpenContract = { contractViewModel.openContract() },
+                        onOpenContract = {
+                            val s = counselViewModel.uiState.value
+                            contractViewModel.prefillFromCounsel(
+                                deceasedName   = s.deceasedName,
+                                funeralHomeName = s.selectedFuneral,
+                                chiefMourner   = s.chiefMourner,
+                                burialDate     = s.burialDate,
+                                checkInDate    = s.checkInDate,
+                                departureDate  = s.departureDate,
+                            )
+                            contractViewModel.openContract()
+                        },
                         viewModel      = consultationViewModel,
                     )
                 }
@@ -158,14 +169,14 @@ private fun CounselHeader(
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             CustomButton(
                 backgroundColor = boram_Br_Color,
-                size = ButtonSize.Small,
+                size = ButtonSize.Medium,
                 text = buttonText,
                 fullWidth = false,
                 horizontalPadding = 12.dp,
                 onClick = onConnect
             )
             CustomButton(
-                size = ButtonSize.Small,
+                size = ButtonSize.Medium,
                 text = "저장",
                 fullWidth = false,
                 horizontalPadding = 12.dp,
@@ -224,7 +235,7 @@ private fun DeceasedInfoBanner(isRecording: Boolean, deceasedName: String) {
             }
             Text(
                 text = if (isRecording) "🔴 현재 녹음 중" else "⚪ 녹음 대기 중",
-                style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium)
             )
         }
     }
@@ -234,10 +245,11 @@ private fun DeceasedInfoBanner(isRecording: Boolean, deceasedName: String) {
 
 @Composable
 private fun EventSummaryRow(uiState: CounselUiState) {
-    Text("행사 정보", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E1F24)))
-    Spacer(modifier = Modifier.height(20.dp))
-    Row(modifier = Modifier.fillMaxWidth()) {
-        StyledInfoBox(modifier = Modifier.weight(1f)) {
+    Spacer(modifier = Modifier.height(18.dp))
+    Text("행사 정보", style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E1F24)))
+    Spacer(modifier = Modifier.height(32.dp))
+    Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Max)) {
+        StyledInfoBox(modifier = Modifier.weight(1f).fillMaxHeight()) {
             SectionTitle("장례 일정 및 장소")
             InfoRow("계열사",   uiState.affiliate.ifBlank { "-" })
             InfoRow("장례식장", uiState.selectedFuneral.ifBlank { "-" })
@@ -246,7 +258,7 @@ private fun EventSummaryRow(uiState: CounselUiState) {
             InfoRow("빈소",     uiState.mortuary.ifBlank { "-" })
         }
         Spacer(modifier = Modifier.width(8.dp))
-        StyledInfoBox(modifier = Modifier.weight(1f)) {
+        StyledInfoBox(modifier = Modifier.weight(1f).fillMaxHeight()) {
             SectionTitle("장례 진행 현황")
             InfoRow("행사",     uiState.eventType.ifBlank { "-" })
             InfoRow("상주",     uiState.chiefMourner.ifBlank { "-" })
@@ -254,7 +266,7 @@ private fun EventSummaryRow(uiState: CounselUiState) {
             InfoRow("특이사항", uiState.specialNote.ifBlank { "-" })
         }
         Spacer(modifier = Modifier.width(8.dp))
-        StyledInfoBox(modifier = Modifier.weight(1f)) {
+        StyledInfoBox(modifier = Modifier.weight(1f).fillMaxHeight()) {
             SectionTitle("정산내역")
             InfoRow("카드", uiState.cardPayment.ifBlank { "-" })
             InfoRow("현금", uiState.cashPayment.ifBlank { "-" })
@@ -282,8 +294,8 @@ fun CounselingTabContent(viewModel: CounselingViewModel) {
 
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         Spacer(modifier = Modifier.height(18.dp))
-        Text("상담 정보", style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E1F24)))
-        Spacer(modifier = Modifier.height(24.dp))
+        Text("상담 정보", style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E1F24)))
+        Spacer(modifier = Modifier.height(32.dp))
 
         BasicInfoComponent(
             counselingNo   = uiState.counselingNo,
@@ -308,7 +320,7 @@ fun CounselingTabContent(viewModel: CounselingViewModel) {
             funeralHomeOptions  = viewModel.funeralHomeOptions,
             eventTypeOptions    = viewModel.eventTypeOptions,
             religionTypeOptions = viewModel.religionTypeOptions,
-            onFuneralHomeChange = { viewModel.updateField { s -> s.copy(funeralHome = it) } },
+            onFuneralHomeChange = { opt -> viewModel.updateField { s -> s.copy(funeralHome = opt.name, funeralHomeId = opt.id) } },
             onEventTypeChange   = { viewModel.updateField { s -> s.copy(eventType = it) } },
             onPatientNameChange = { viewModel.updateField { s -> s.copy(patientName = it) } },
             onAgeChange         = { viewModel.updateField { s -> s.copy(age = it) } },
@@ -430,7 +442,7 @@ private fun ProductListItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .border(if (isSelected) 1.5.dp else 0.5.dp, borderColor, RoundedCornerShape(8.dp))
+            .border(if (isSelected) 1.dp else 0.5.dp, borderColor, RoundedCornerShape(8.dp))
             .background(bgColor, RoundedCornerShape(8.dp))
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -482,21 +494,21 @@ private fun ProductListItem(
             )
             if (product.description.isNotBlank()) {
                 Spacer(modifier = Modifier.height(2.dp))
-                Text(product.description, fontSize = 12.sp, color = Color(0xFF666666))
+                Text(product.description, fontSize = 14.sp, color = Color(0xFF666666))
             }
         }
 
         if (product.price.isNotBlank()) {
-            Text(product.price, fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Color(0xFF05195F))
+            Text(product.price, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color(0xFF05195F))
         }
 
-        // 선택 해제 버튼
-        if (isSelected) {
-            Spacer(modifier = Modifier.width(8.dp))
-            IconButton(onClick = onRemove, modifier = Modifier.size(24.dp)) {
-                Icon(Icons.Default.Check, contentDescription = "선택 해제", tint = Color(0xFF05195F), modifier = Modifier.size(16.dp))
-            }
-        }
+//        // 선택 해제 버튼
+//        if (isSelected) {
+//            Spacer(modifier = Modifier.width(8.dp))
+//            IconButton(onClick = onRemove, modifier = Modifier.size(24.dp)) {
+//                Icon(Icons.Default.Check, contentDescription = "선택 해제", tint = Color(0xFF05195F), modifier = Modifier.size(16.dp))
+//            }
+//        }
     }
 }
 
@@ -513,6 +525,7 @@ private fun ProductDetailDialog(
         Card(
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
         ) {
             Column(
                 modifier = Modifier.padding(20.dp),
@@ -544,20 +557,24 @@ private fun ProductDetailDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    OutlinedButton(
-                        onClick = onCancel,
-                        modifier = Modifier.weight(1f),
-                    ) {
-                        Text("취소")
+                    Box(modifier = Modifier.weight(1f)) {
+                        CustomButton(
+                            text = "취소",
+                            size = ButtonSize.Medium,
+                            fullWidth = true,
+                            backgroundColor = Color(0xFFF2F2F2),
+                            contentColor = Color(0xFF333333),
+                            onClick = onCancel,
+                        )
                     }
-                    Button(
-                        onClick = onConfirm,
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isAlreadySelected) Color(0xFFE53935) else Color(0xFF05195F)
-                        ),
-                    ) {
-                        Text(if (isAlreadySelected) "선택 해제" else "확인", color = Color.White)
+                    Box(modifier = Modifier.weight(1f)) {
+                        CustomButton(
+                            text = if (isAlreadySelected) "선택 해제" else "확인",
+                            size = ButtonSize.Medium,
+                            fullWidth = true,
+                            backgroundColor = if (isAlreadySelected) Color(0xFFE53935) else Color(0xFF05195F),
+                            onClick = onConfirm,
+                        )
                     }
                 }
             }
@@ -571,7 +588,6 @@ private fun ProductDetailDialog(
 fun StyledInfoBox(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
     Card(
         modifier = modifier
-            .height(280.dp)
             .graphicsLayer {
                 shadowElevation = 20f
                 spotShadowColor = Color(0xFFD1D9E6)
@@ -584,7 +600,7 @@ fun StyledInfoBox(modifier: Modifier = Modifier, content: @Composable ColumnScop
         border = BorderStroke(1.dp, Color(0xFFF1F3F4)),
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
             content = content,
         )
@@ -593,7 +609,7 @@ fun StyledInfoBox(modifier: Modifier = Modifier, content: @Composable ColumnScop
 
 @Composable
 private fun SectionTitle(text: String) {
-    Text(text, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E1F24)))
+    Text(text, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E1F24)))
     Spacer(modifier = Modifier.height(12.dp))
 }
 
@@ -603,14 +619,14 @@ private fun InfoRow(label: String, value: String) {
         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(label, style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color.Gray))
-        Text(value, style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E1F24)))
+        Text(label, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, color = Color.Gray))
+        Text(value, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, color = Color(0xFF1E1F24)))
     }
 }
 
 @Composable
 private fun InfoText(text: String) {
-    Text(text, style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E1F24)))
+    Text(text, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E1F24)))
 }
 
 @Composable

@@ -97,16 +97,16 @@ fun LoginScreen(
                             onValueChange = { viewModel.pwText = it }
                         )
 
-                        // 3. 아이디 저장 체크박스 (간격 조절을 위해 별도 추가)
+                        // 3. 아이디 저장 체크박스
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { /* 아이디 저장 체크 로직 */ },
+                                .clickable { viewModel.isRememberId = !viewModel.isRememberId },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Checkbox(
-                                checked = false, // 나중에 viewModel.isRememberId 등으로 연결
-                                onCheckedChange = { /* 체크 처리 */ },
+                                checked = viewModel.isRememberId,
+                                onCheckedChange = { viewModel.isRememberId = it },
                                 colors = CheckboxDefaults.colors(checkedColor = boram_Br_Color)
                             )
                             Text(text = "아이디 저장", fontSize = 14.sp, color = Color.Gray)

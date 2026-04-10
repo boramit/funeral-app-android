@@ -7,11 +7,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import com.example.boram_funeral.ui.screens.contract.pdf.LocalPageIndex
 import com.example.boram_funeral.ui.screens.contract.pdf.LocalScrollStateRegistrar
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,24 +22,17 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.boram_funeral.ui.components.contracts.funeral.base.HandwrittenAreaCell
 import com.example.boram_funeral.ui.screens.contract.logic.ContractViewModel
-import kotlin.String
 
 // ── 색상 ──────────────────────────────────────────────────────────────────────
-
-private val ColorPrimary   = Color(0xFF05195F)
-private val ColorBg        = Color(0xFFF9F9F9)
-private val ColorBorder    = Color(0xFF888888)
-private val ColorTableHead = Color(0xFFEEF2FF)
-private val ColorText      = Color(0xFF222222)
-private val ColorSub       = Color(0xFF555555)
-private val ColorConfirmBg = Color(0xFFFFFDE7)
+private val COLOR_BRAND  = Color(0xFF05195F)
+private val COLOR_HEADER = Color(0xFFF5F5F5)
+private val COLOR_BORDER = Color(0xFFD1D1D1)
 
 // ── 테이블 행 데이터 ──────────────────────────────────────────────────────────
 
@@ -81,10 +72,7 @@ fun CustomerConfirmStep(viewModel: ContractViewModel) {
     val scrollState = rememberScrollState()
     LaunchedEffect(Unit) { registerScrollState(pageIndex, scrollState) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -95,12 +83,10 @@ fun CustomerConfirmStep(viewModel: ContractViewModel) {
             // ── 제목 ──────────────────────────────────────────────────────────
             Text(
                 text = "보람인천장례식장 이용계약 안내 및 고객 확인서",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = ColorPrimary,
-                    textAlign = TextAlign.Center
-                ),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = COLOR_BRAND,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
@@ -111,7 +97,9 @@ fun CustomerConfirmStep(viewModel: ContractViewModel) {
 
             Text(
                 text = "아래의 내용은 보람상조개발(주) 보람인천장례식장의 장례행사서비스의 주요 내용만을 설명한 것으로, 상세 내용은 장례식장 이용계약서 및 약관을 참조하시기 바랍니다.",
-                style = TextStyle(fontSize = 11.sp, color = ColorSub, lineHeight = 18.sp),
+                fontSize = 16.sp,
+                color = Color(0xFF555555),
+                lineHeight = 24.sp,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
 
@@ -130,37 +118,40 @@ fun CustomerConfirmStep(viewModel: ContractViewModel) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(ColorConfirmBg, RoundedCornerShape(6.dp))
-                    .border(1.dp, Color(0xFFD4C200), RoundedCornerShape(6.dp))
+                    .border(0.5.dp, COLOR_BORDER)
                     .padding(14.dp)
             ) {
                 Text(
                     text = "본인은 보람상조개발(주)가 운영하는 보람인천장례식장에서 장례행사 서비스를 이용하기 위한 계약을 체결하기 전에,",
-                    style = TextStyle(fontSize = 12.sp, color = ColorText, lineHeight = 20.sp),
+                    fontSize = 16.sp,
+                    color = Color(0xFF222222),
+                    lineHeight = 24.sp,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
                 confirmCheckItems.forEach { item ->
-                    Row(
-                        modifier = Modifier.padding(vertical = 2.dp),
-                        verticalAlignment = Alignment.Top
-                    ) {
-                        Text(
-                            text = item,
-                            style = TextStyle(fontSize = 12.sp, color = ColorText, lineHeight = 20.sp)
-                        )
-                    }
+                    Text(
+                        text = item,
+                        fontSize = 16.sp,
+                        color = Color(0xFF222222),
+                        lineHeight = 24.sp,
+                        modifier = Modifier.padding(vertical = 2.dp)
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = "위 사항들을 상담사로부터 충분히 설명을 듣고 계약을 체결하였으며,\n계약서 및 약관을 교부받았음을 확인합니다.",
-                    style = TextStyle(fontSize = 12.sp, color = ColorText, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF222222),
+                    lineHeight = 24.sp
                 )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
+
             // ── 하단 날짜 및 서명 ─────────────────────────────────────────────
             CustomerConfirmFooter(
                 year = remember { java.util.Calendar.getInstance().get(java.util.Calendar.YEAR).toString() },
@@ -201,39 +192,36 @@ private fun CustomerConfirmFooter(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Text("${year}년", style = TextStyle(fontSize = 16.sp))
+            Text("${year}년", fontSize = 16.sp)
             Spacer(modifier = Modifier.width(16.dp))
             HandwrittenDateUnit(width = 80.dp)
-            Text("월", modifier = Modifier.padding(horizontal = 8.dp), style = TextStyle(fontSize = 16.sp))
+            Text("월", fontSize = 16.sp, modifier = Modifier.padding(horizontal = 8.dp))
             HandwrittenDateUnit(width = 80.dp)
-            Text("일", modifier = Modifier.padding(horizontal = 8.dp), style = TextStyle(fontSize = 16.sp))
+            Text("일", fontSize = 16.sp, modifier = Modifier.padding(horizontal = 8.dp))
         }
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        // 임대인 / 임차인
+        // 서명란
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Top
         ) {
             Spacer(modifier = Modifier.weight(1f))
 
-            // 임차인 서명
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     "계약자(이용자)",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     modifier = Modifier.padding(end = 8.dp)
                 )
 
                 Box(
                     modifier = Modifier
-                        .size(width = 140.dp, height = 48.dp)
-                        .background(Color(0xFFF5F5F5))
-                        .border(1.dp, Color(0xFFCCCCCC), RoundedCornerShape(4.dp))
+                        .size(width = 140.dp, height = 56.dp)
+                        .background(COLOR_HEADER)
+                        .border(0.5.dp, COLOR_BORDER)
                         .clickable { onSignatureClick() },
                     contentAlignment = Alignment.Center
                 ) {
@@ -269,7 +257,7 @@ private fun CustomerConfirmFooter(
                                 }
                             }
                         } else {
-                            Text("성명 (인)", fontSize = 12.sp, color = Color.Gray)
+                            Text("성명 (인)", fontSize = 16.sp, color = Color.Gray)
                         }
                     }
                 }
@@ -288,27 +276,32 @@ private fun ConfirmTable(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, ColorBorder)
+            .border(0.5.dp, COLOR_BORDER)
     ) {
         // 헤더
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(ColorTableHead)
+                .background(COLOR_HEADER)
                 .height(IntrinsicSize.Min)
         ) {
-            TableCell("No", 0.6f, isHeader = true)
+            ConfirmHeaderCell("No",              0.6f)
             VLine()
-            TableCell("계약 주요 내용 안내", 3f, isHeader = true)
+            ConfirmHeaderCell("계약 주요 내용 안내", 3f)
             VLine()
-            TableCell("참 조", 2.5f, isHeader = true)
+            ConfirmHeaderCell("참 조",            2.5f)
             VLine()
-            TableCell("설명 여부", 2f, isHeader = true)
+            ConfirmHeaderCell("설명 여부",         2f)
         }
 
         // 데이터 행
         confirmRows.forEachIndexed { idx, row ->
-            Divider(color = ColorBorder, thickness = 1.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(0.5.dp)
+                    .background(COLOR_BORDER)
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -324,12 +317,10 @@ private fun ConfirmTable(
                 ) {
                     Text(
                         text = "${row.no}",
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = ColorPrimary,
-                            textAlign = TextAlign.Center
-                        )
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = COLOR_BRAND,
+                        textAlign = TextAlign.Center
                     )
                 }
                 VLine()
@@ -343,7 +334,9 @@ private fun ConfirmTable(
                 ) {
                     Text(
                         text = row.content,
-                        style = TextStyle(fontSize = 12.sp, color = ColorText, lineHeight = 19.sp)
+                        fontSize = 16.sp,
+                        color = Color(0xFF222222),
+                        lineHeight = 24.sp
                     )
                 }
                 VLine()
@@ -357,7 +350,9 @@ private fun ConfirmTable(
                 ) {
                     Text(
                         text = row.reference,
-                        style = TextStyle(fontSize = 11.sp, color = ColorSub, lineHeight = 17.sp)
+                        fontSize = 16.sp,
+                        color = Color(0xFF555555),
+                        lineHeight = 24.sp
                     )
                 }
                 VLine()
@@ -365,13 +360,13 @@ private fun ConfirmTable(
                 Box(
                     modifier = Modifier
                         .weight(2f)
-                        .height(56.dp)
+                        .height(64.dp)
                 ) {
                     HandwrittenAreaCell(
                         modifier = Modifier.fillMaxSize(),
                         externalTick = ticks.getOrElse(idx) { 0 },
                         onDraw = { onDraw(idx) },
-                        hint="설명 들었음",
+                        hint = "설명 들었음",
                     )
                 }
             }
@@ -385,32 +380,24 @@ private fun ConfirmTable(
 private fun SectionTitle(text: String) {
     Text(
         text = text,
-        style = TextStyle(
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            color = ColorPrimary
-        ),
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Bold,
+        color = COLOR_BRAND,
         modifier = Modifier.padding(bottom = 8.dp)
     )
 }
 
 @Composable
-private fun RowScope.TableCell(
-    text: String,
-    weight: Float,
-    isHeader: Boolean = false
-) {
+private fun RowScope.ConfirmHeaderCell(text: String, weight: Float) {
     Text(
         text = text,
-        style = TextStyle(
-            fontSize = 11.sp,
-            fontWeight = if (isHeader) FontWeight.Bold else FontWeight.Normal,
-            color = ColorText,
-            textAlign = TextAlign.Center
-        ),
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Bold,
+        color = COLOR_BRAND,
+        textAlign = TextAlign.Center,
         modifier = Modifier
             .weight(weight)
-            .padding(vertical = 8.dp, horizontal = 4.dp)
+            .padding(vertical = 10.dp, horizontal = 4.dp)
             .wrapContentHeight(Alignment.CenterVertically)
     )
 }
@@ -419,8 +406,8 @@ private fun RowScope.TableCell(
 private fun RowScope.VLine() {
     Box(
         modifier = Modifier
-            .width(1.dp)
+            .width(0.5.dp)
             .fillMaxHeight()
-            .background(ColorBorder)
+            .background(COLOR_BORDER)
     )
 }

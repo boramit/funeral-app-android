@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.example.boram_funeral.ui.components.common.Input.CustomDropdownField
@@ -56,6 +55,7 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.Dialog
 import com.example.boram_funeral.ui.screens.contract.pdf.LocalIsPdfCapturing
 
@@ -65,13 +65,16 @@ fun RowScope.LabelCell(
     text: String,
     weight: Float = 1f,
     modifier: Modifier = Modifier, // 확장성을 위해 modifier 파라미터 추가
-    fontSize: TextUnit = 12.sp,
-) {
+    fontSize: TextUnit = 14.sp,
+    height: Dp? = null,
+    ) {
+
+    val heightModifier = if (height != null) Modifier.height(height) else Modifier.fillMaxHeight().defaultMinSize(minHeight = 48.dp)
+
     Box(
         modifier = modifier
             .weight(weight)
-            .fillMaxHeight()           // 부모 Row의 높이가 커지면 같이 늘어남
-            .heightIn(min = 48.dp)      // 최소 48dp 높이 유지 (InputCell과 통일)
+            .then(heightModifier)
             .background(Color(0xFFF5F5F5))
             .border(0.5.dp, Color(0xFFD1D1D1))
             .padding(4.dp), // 내부 여백 조정
@@ -81,7 +84,7 @@ fun RowScope.LabelCell(
             text = text,
             fontSize = fontSize,
             fontWeight = FontWeight.Bold,
-            lineHeight = 13.sp,
+            lineHeight = 18.sp,
             textAlign = TextAlign.Center
         )
     }
@@ -90,19 +93,22 @@ fun RowScope.LabelCell(
 @Composable
 fun ColumnScope.LabelCell(
     text: String,
-    modifier: Modifier = Modifier // 유연성을 위해 modifier를 추가합니다.
+    modifier: Modifier = Modifier,
+    height: Dp? = null,
 ) {
+    val heightModifier = if (height != null) Modifier.height(height) else Modifier.padding(vertical = 12.dp)
     Box(
         modifier = modifier
-            .fillMaxWidth() // 세로 묶음이므로 가로를 꽉 채웁니다.
+            .fillMaxWidth()
+            .then(heightModifier)
             .background(Color(0xFFF5F5F5))
             .border(0.5.dp, Color(0xFFD1D1D1))
-            .padding(vertical = 12.dp, horizontal = 8.dp), // 상하 여백 조절
+            .padding(horizontal = 8.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
-            fontSize = 12.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             lineHeight = 13.sp,
             textAlign = TextAlign.Center
@@ -118,8 +124,9 @@ fun RowScope.InputCell(
     placeholder: String = "",
     modifier: Modifier = Modifier,
     alignment: Alignment = Alignment.Center,
-    fontSize: TextUnit = 12.sp,
-    isReadOnly: Boolean = false
+    fontSize: TextUnit = 16.sp,
+    isReadOnly: Boolean = false,
+    height: Dp? = null,
 ) {
 
     val textAlign = when (alignment) {
@@ -128,15 +135,15 @@ fun RowScope.InputCell(
         else -> TextAlign.Center
     }
 
+    val heightModifier = if (height != null) Modifier.height(height) else Modifier.fillMaxHeight().defaultMinSize(minHeight = 48.dp)
+
     BasicTextField(
         value = value,
         readOnly = isReadOnly,
         onValueChange = onValueChange,
-        // 필기 인식이 잘 되도록 포커스 및 터치 영역 최적화
         modifier = Modifier
             .weight(weight)
-            .fillMaxHeight()
-            .defaultMinSize(minHeight = 48.dp)
+            .then(heightModifier)
             .border(0.5.dp, Color(0xFFD1D1D1))
             .padding(horizontal = 4.dp),
         textStyle = TextStyle(fontSize = fontSize, textAlign = textAlign),
@@ -151,7 +158,7 @@ fun RowScope.InputCell(
                 contentAlignment = alignment,
             ) {
                 if (value.isEmpty()) {
-                    Text(placeholder, color = Color.LightGray, fontSize = 11.sp)
+                    Text(placeholder, color = Color.LightGray, fontSize = 15.sp)
                 }
                 innerTextField()
             }
@@ -173,7 +180,7 @@ fun ColumnScope.InputCell(
             .height(48.dp)
             .focusable()
             .border(0.5.dp, Color(0xFFD1D1D1)),
-        textStyle = TextStyle(fontSize = 16.sp),
+        textStyle = TextStyle(fontSize = 15.sp),
         singleLine = true,
         maxLines = 1,
         decorationBox = { innerTextField ->
@@ -184,7 +191,7 @@ fun ColumnScope.InputCell(
                 contentAlignment = Alignment.CenterStart
             ) {
                 if (value.isEmpty()) {
-                    Text(placeholder, color = Color.LightGray, fontSize = 11.sp)
+                    Text(placeholder, color = Color.LightGray, fontSize = 15.sp)
                 }
                 innerTextField()
             }
@@ -205,7 +212,7 @@ fun InlineInputCell(
         modifier = Modifier
             .width(width),
         textStyle = TextStyle(
-            fontSize = 12.sp, // 일반 Text 컴포넌트와 크기를 맞춤
+            fontSize = 14.sp, // 일반 Text 컴포넌트와 크기를 맞춤
             fontWeight = FontWeight.Medium,
             color = Color.Black,
             textAlign = TextAlign.Center // 문장 중간에서는 중앙 정렬이 예쁩니다.
@@ -216,7 +223,7 @@ fun InlineInputCell(
                     if (value.isEmpty()) {
                         Text(
                             text = placeholder,
-                            style = TextStyle(color = Color.Gray, fontSize = 12.sp),
+                            style = TextStyle(color = Color.Gray, fontSize = 15.sp),
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )
@@ -245,7 +252,7 @@ fun MiniInputCell(
         onValueChange = onValueChange,
         modifier = Modifier
             .width(width)
-            .height(30.dp), // 전체 높이
+            .height(48.dp), // 전체 높이
         textStyle = TextStyle(fontSize = 14.sp, textAlign = TextAlign.Center),
         singleLine = true,
         decorationBox = { innerTextField ->
@@ -261,11 +268,11 @@ fun MiniInputCell(
                     innerTextField()
                 }
                 // 선을 텍스트 바로 아래에 배치
-                HorizontalDivider(
-                    color = Color.LightGray,
-                    thickness = 1.dp,
-                    modifier = Modifier.fillMaxWidth()
-                )
+//                HorizontalDivider(
+//                    color = Color.LightGray,
+//                    thickness = 1.dp,
+//                    modifier = Modifier.fillMaxWidth()
+//                )
             }
         },
     )
@@ -277,25 +284,27 @@ fun RowScope.SelectCell(
     options: List<String>,
     onOptionSelected: (String) -> Unit,
     weight: Float = 1f,
-    placeholder: String = "선택"
+    placeholder: String = "선택",
+    height: Dp? = null,
 ) {
+    val heightModifier = if (height != null) Modifier.height(height) else Modifier.fillMaxHeight()
     Box(
         modifier = Modifier
             .weight(weight)
-            .fillMaxHeight()
-            .border(0.5.dp, Color(0xFFD1D1D1)) // 테이블 테두리 유지
+            .border(0.5.dp, Color(0xFFD1D1D1))
     ) {
         // 이미 만들어둔 커스텀 드롭다운 호출
         CustomDropdownField(
             label = "",
             shape = RectangleShape,
-            border = null,
             options = options,
             selectedOption = selectedOption,
             onOptionSelected = onOptionSelected,
-            fontSize = 12.sp,
+            fontSize = 16.sp,
             placeholder = placeholder,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .then(heightModifier)
         )
     }
 }
@@ -311,6 +320,7 @@ fun RoomPriceRow(
     priceH: String,    // "26,000원"
     priceD: String,    // "624,000원"
     totalAmount: String, // 금액 칸에 들어갈 값
+    fontSize: TextUnit = 15.sp,
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -325,27 +335,14 @@ fun RoomPriceRow(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // 1. 호실 이름 칸
-            LabelCell(
-                text = roomName,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-            )
-
-            // 2. 좌석 수 칸 (원하시는 대로 별도의 LabelCell로 분리)
-            LabelCell(
-                text = "($seatCount)",
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-            )
+            LabelCell(text = roomName,      height = 48.dp)
+            LabelCell(text = "($seatCount)", height = 48.dp)
         }
 
         // 2. 나머지 칸들
-        InputCell(value = size, onValueChange = {}, weight = 1f, isReadOnly = true)
-        InputCell(value = priceH, onValueChange = {}, weight = 1f, isReadOnly = true)
-        InputCell(value = priceD, onValueChange = {}, weight = 1f, isReadOnly = true)
+        InputCell(value = size,    onValueChange = {}, weight = 1f, isReadOnly = true, fontSize = fontSize)
+        InputCell(value = priceH,  onValueChange = {}, weight = 1.5f, isReadOnly = true, fontSize = fontSize)
+        InputCell(value = priceD,  onValueChange = {}, weight = 1.5f, isReadOnly = true, fontSize = fontSize)
 
         // 3. 단위 칸 (x [ ] 일)
         Row(
@@ -356,11 +353,11 @@ fun RoomPriceRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Text("x", fontSize = 12.sp)
+            Text("x", fontSize = fontSize)
             Spacer(modifier = Modifier.width(4.dp))
             MiniInputCell(value = dayCount, onValueChange = onDayCountChange, width = 35.dp)
             Spacer(modifier = Modifier.width(4.dp))
-            Text("일", fontSize = 12.sp)
+            Text("일", fontSize = fontSize)
         }
 
         // 4. 금액 칸 (우측 정렬)
@@ -369,7 +366,8 @@ fun RoomPriceRow(
             onValueChange = {},
             weight = 1.5f,
             alignment = Alignment.CenterEnd,
-            isReadOnly = true
+            isReadOnly = true,
+            fontSize = fontSize
         )
     }
 }
@@ -383,7 +381,7 @@ fun ServiceInputRow(
     onCountChange: (String) -> Unit = {},       // 추가
     totalAmount: String = "",                   // 추가
     onAmountChange: (String) -> Unit = {},      // 추가
-    fontSize: TextUnit = 12.sp
+    fontSize: TextUnit = 16.sp
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -403,7 +401,7 @@ fun ServiceInputRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Text("x", fontSize = 12.sp, letterSpacing = (-0.5).sp)
+            Text("x", fontSize = 14.sp, letterSpacing = (-0.5).sp)
             Spacer(modifier = Modifier.width(2.dp))
             // 수량을 입력하는 작은 창
             MiniInputCell(
@@ -412,7 +410,7 @@ fun ServiceInputRow(
                 width = 30.dp
             )
             Spacer(modifier = Modifier.width(2.dp))
-            Text(unitText, fontSize = 12.sp, letterSpacing = (-0.5).sp)
+            Text(unitText, fontSize = 14.sp, letterSpacing = (-0.5).sp)
         }
 
         // [금액] 최종 계산 결과 또는 입력창 (우측 정렬)
@@ -450,8 +448,8 @@ fun TotalServiceRow(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "합 계",
-                style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Bold, letterSpacing = 4.sp)
+                text = "합계",
+                style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, letterSpacing = 4.sp)
             )
             Spacer(modifier = Modifier.width(2.dp))
             // 숫자 입력창 (언더라인 스타일을 원하시면 MiniInputCell 내부에 선을 추가하거나
@@ -463,7 +461,7 @@ fun TotalServiceRow(
             )
 
             Spacer(modifier = Modifier.width(2.dp))
-            Text("원", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Text("원", fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
         
     }
@@ -471,7 +469,7 @@ fun TotalServiceRow(
 
 @Composable
 fun ContractFooter(
-    year: String = "2026", // 현재 연도 반영
+    year: String = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR).toString(),
     month: String = "",
     day: String = "",
     onSignatureClick: () -> Unit,
@@ -490,14 +488,14 @@ fun ContractFooter(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Text("${year}",style = TextStyle(fontSize = 16.sp))
-            Text("년", modifier = Modifier.padding(horizontal = 8.dp), style = TextStyle(fontSize = 16.sp))
+            Text("${year}",style = TextStyle(fontSize = 15.sp))
+            Text("년", modifier = Modifier.padding(horizontal = 8.dp), style = TextStyle(fontSize = 15.sp))
 
             HandwrittenDateUnit(width = 80.dp)
-            Text("월", modifier = Modifier.padding(horizontal = 8.dp), style = TextStyle(fontSize = 16.sp))
+            Text("월", modifier = Modifier.padding(horizontal = 8.dp), style = TextStyle(fontSize = 15.sp))
 
             HandwrittenDateUnit(width = 80.dp)
-            Text("일", modifier = Modifier.padding(horizontal = 8.dp), style = TextStyle(fontSize = 16.sp))
+            Text("일", modifier = Modifier.padding(horizontal = 8.dp), style = TextStyle(fontSize = 15.sp))
         }
 
         Spacer(modifier = Modifier.height(30.dp))
@@ -509,7 +507,7 @@ fun ContractFooter(
         ) {
             // 임대인 영역
             Row(modifier = Modifier.weight(1.2f), verticalAlignment = Alignment.Top) {
-                Text("임대인 : ", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                Text("임대인 : ", fontWeight = FontWeight.Bold, fontSize = 14.sp,)
                 Column (){
                     Text(text = "보람상조개발 주식회사 보람인천장례식장", fontSize = 13.sp)
                     Text(text = "인천광역시 서구 경명대로 468 (경서동)", fontSize = 13.sp)
@@ -699,7 +697,7 @@ fun SignatureDialog(
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = "임차인 서명",
-                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))

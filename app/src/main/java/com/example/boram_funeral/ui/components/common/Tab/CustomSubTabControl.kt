@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,11 +42,11 @@ fun CustomSubTabControl(
 
     Column(modifier = Modifier.fillMaxWidth()) {
 
-        Row () {
+        Row {
             // 탭 버튼 영역
             Column(
                 modifier = Modifier
-                    .width(140.dp)
+                    .width(200.dp)
                     .background(Color(0xFFF5F5F5), shape = RoundedCornerShape(8.dp))
                     .padding(4.dp), // 사이드바 전체 안쪽 여백
                 verticalArrangement = Arrangement.spacedBy(8.dp) // 버튼 사이 간격
@@ -68,7 +67,7 @@ fun CustomSubTabControl(
                                     )
                                 } else Modifier
                             )
-                            .height(42.dp)
+                            .height(48.dp)
                             .background(
                                 color = if (isSelected) Color.White else Color.Transparent,
                                 shape = RoundedCornerShape(6.dp)
@@ -83,7 +82,7 @@ fun CustomSubTabControl(
                         Text(
                             modifier = Modifier.padding(horizontal = 12.dp),
                             text = title,
-                            fontSize = 13.sp,
+                            fontSize = 16.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                             color = if (isSelected) Color.Black else Color(0xFF666666)
                         )
@@ -93,18 +92,20 @@ fun CustomSubTabControl(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // 4. 컨텐츠 영역 (측정된 높이 적용)
+            // 4. 컨텐츠 영역
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
                     .weight(1f)
-                    .graphicsLayer(clip = false) // 그림자 잘림 방지
-                    .heightIn(max = 900.dp)
-                    .wrapContentHeight(),
+                    .wrapContentHeight(Alignment.Top),
                 verticalAlignment = Alignment.Top,
                 userScrollEnabled = false,
             ) { pageIndex ->
-                Box(modifier = Modifier.wrapContentHeight()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                ) {
                     content(pageIndex)
                 }
             }

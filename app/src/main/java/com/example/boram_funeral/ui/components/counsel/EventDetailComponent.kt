@@ -12,11 +12,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.boram_funeral.ui.components.common.Input.CustomDropdownField
 import com.example.boram_funeral.ui.components.common.Input.CustomTextField
+import com.example.boram_funeral.ui.screens.counsel.model.FuneralHomeOption
 
 @Composable
 fun EventDetailComponent(
 
-    funeralHomeOptions: List<String>,
+    funeralHomeOptions: List<FuneralHomeOption>,
     eventTypeOptions: List<String>,
     religionTypeOptions: List<String>,
 
@@ -25,7 +26,7 @@ fun EventDetailComponent(
     patientName: String,
     age: String,
     religion: String,
-    onFuneralHomeChange: (String) -> Unit,
+    onFuneralHomeChange: (FuneralHomeOption) -> Unit,
     onEventTypeChange: (String) -> Unit,
     onPatientNameChange: (String) -> Unit,
     onAgeChange: (String) -> Unit,
@@ -42,7 +43,7 @@ fun EventDetailComponent(
                 modifier = Modifier.width(120.dp),
                 text = "행사 상세",
                 style = TextStyle(
-                    fontSize = 15.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF333333)
                 ),
@@ -55,11 +56,14 @@ fun EventDetailComponent(
                         // 1. 장례식장 (중요도가 높고 이름이 길 수 있으므로 1단 배치)
                         CustomDropdownField(
                             label = "장례식장",
-                            options = funeralHomeOptions,
+                            options = funeralHomeOptions.map { it.name },
                             selectedOption = funeralHome,
-                            onOptionSelected = onFuneralHomeChange,
+                            onOptionSelected = { name ->
+                                funeralHomeOptions.find { it.name == name }
+                                    ?.let { onFuneralHomeChange(it) }
+                            },
                             placeholder = "선택",
-                            height = 38.dp
+                            height = 48.dp
                         )
                     }
                     Spacer(modifier = Modifier.width(12.dp))
@@ -70,10 +74,10 @@ fun EventDetailComponent(
                             selectedOption = eventType,
                             onOptionSelected = onEventTypeChange,
                             placeholder = "선택",
-                            height = 38.dp
+                            height = 48.dp
                         )
                     }
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(20.dp))
                     Box(modifier = Modifier.weight(1f)) {
                         CustomDropdownField(
                             label = "종교",
@@ -81,12 +85,12 @@ fun EventDetailComponent(
                             selectedOption = religion,
                             onOptionSelected = onReligionChange,
                             placeholder = "선택",
-                            height = 38.dp
+                            height = 48.dp
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 // 3. 환자명 & 연령 (고인 정보 묶음 - 2단 배치)
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -96,7 +100,7 @@ fun EventDetailComponent(
                             value = patientName,
                             onValueChange = onPatientNameChange,
                             placeholder = "이름 입력",
-                            height = 38.dp
+                            height = 48.dp
                         )
                     }
                     Spacer(modifier = Modifier.width(12.dp))
@@ -106,7 +110,7 @@ fun EventDetailComponent(
                             value = age,
                             onValueChange = onAgeChange,
                             placeholder = "세",
-                            height = 38.dp
+                            height = 48.dp
                         )
                     }
                 }

@@ -36,10 +36,10 @@ fun RowScope.DateTimeInputBlock(
     ) {
         Column(modifier = Modifier.fillMaxHeight().padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                MiniInputCell(value = year, onValueChange = {}, width = 60.dp) // 년도는 읽기전용
+                MiniInputCell(value = year, onValueChange = {}, width = 40.dp) // 년도는 읽기전용
                 Text("년")
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     MiniInputCell(value = month, onValueChange = onMonthChange, width = 40.dp)
@@ -50,7 +50,7 @@ fun RowScope.DateTimeInputBlock(
                     Text("일", style = TextStyle(fontSize = 14.sp))
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     MiniInputCell(value = hour, onValueChange = onHourChange, width = 40.dp)

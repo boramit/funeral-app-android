@@ -38,7 +38,7 @@ fun SaleAgreementComponent(
                 modifier = Modifier.width(120.dp),
                 text = "할인 및 협약 정보",
                 style = TextStyle(
-                    fontSize = 15.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF333333)
                 ),
@@ -71,13 +71,13 @@ fun SaleAgreementComponent(
                             }
                             Text(
                                 text = text,
-                                fontSize = 13.sp,
+                                fontSize = 16.sp,
                                 modifier = Modifier.padding(start = 2.dp)
                             )
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 // 할인구분 & 기업/단체명
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Box(modifier = Modifier.weight(1f)) {
@@ -86,18 +86,18 @@ fun SaleAgreementComponent(
                             value = saleCategory,
                             onValueChange = onCategoryChange,
                             placeholder = "MOU/임직원 등",
-                            height = 38.dp,
+                            height = 48.dp,
                             enabled = isEditable // 비활성화 설정
                         )
                     }
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(20.dp))
                     Box(modifier = Modifier.weight(1f)) {
                         CustomTextField(
                             label = "기업/단체명",
                             value = companyName,
                             onValueChange = onCompanyNameChange,
                             placeholder = "회사명 입력",
-                            height = 38.dp,
+                            height = 48.dp,
                             enabled = isEditable // 비활성화 설정
                         )
                     }

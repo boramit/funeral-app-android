@@ -41,7 +41,7 @@ fun CustomTabControl(
             TabRow(
                 selectedTabIndex = pagerState.currentPage,
                 containerColor = Color.Transparent,
-                modifier = Modifier.width(200.dp).background(Color(0xFFF5F5F5), shape = RoundedCornerShape(8.dp)).padding(2.dp), // 버튼 2개 기준 적절한 너비
+                modifier = Modifier.width(240.dp).background(Color(0xFFF5F5F5), shape = RoundedCornerShape(8.dp)).padding(2.dp), // 버튼 2개 기준 적절한 너비
                 indicator = {}, // 1. 인디케이터(선) 완전 제거
                 divider = {}    // 2. 하단 구분선 제거
             ) {
@@ -52,7 +52,7 @@ fun CustomTabControl(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(38.dp)
+                            .height(48.dp)
                             .padding(2.dp)
                             // 1. 선택 시 그림자 설정
                             .then(
@@ -85,7 +85,7 @@ fun CustomTabControl(
                         Text(
                             text = title,
                             style = TextStyle(
-                                fontSize = 12.sp,
+                                fontSize = 14.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                                 color = if (isSelected) Color.Black else Color(0xFF757575)
                             )

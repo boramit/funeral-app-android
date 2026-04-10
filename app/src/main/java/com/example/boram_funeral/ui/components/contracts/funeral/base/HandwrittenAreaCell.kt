@@ -153,8 +153,8 @@ fun HandwrittenAreaCell(
                     contentDescription = "지우기",
                     tint = Color.Red,
                     modifier = Modifier
-                        .size(12.dp)
-                        .background(Color(0x33FF0000), CircleShape)
+                        .size(10.dp)
+                        .background(Color.LightGray, CircleShape)
                 )
             }
         }

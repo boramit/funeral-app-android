@@ -32,7 +32,7 @@ fun LocationInfoComponent(
                 modifier = Modifier.width(120.dp),
                 text = "장소 및 기관",
                 style = TextStyle(
-                    fontSize = 15.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF333333)
                 ),
@@ -46,10 +46,10 @@ fun LocationInfoComponent(
                         value = locationAdmission,
                         onValueChange = onAdmissionChange,
                         placeholder = "유치 장소를 입력하세요.",
-                        height = 38.dp
+                        height = 48.dp
                     )
                 }
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(20.dp))
                 Box (modifier = Modifier.weight(1f)){
                     // 2. 요양장소 (1단)
                     CustomTextField(
@@ -57,10 +57,10 @@ fun LocationInfoComponent(
                         value = locationCare,
                         onValueChange = onCareChange,
                         placeholder = "요양 장소를 입력하세요.",
-                        height = 38.dp
+                        height = 48.dp
                     )
                 }
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(20.dp))
                 Box (modifier = Modifier.weight(1f)){
                     // 3. 상조회사 (1단)
                     CustomTextField(
@@ -68,7 +68,7 @@ fun LocationInfoComponent(
                         value = funeralCompany,
                         onValueChange = onCompanyChange,
                         placeholder = "상조회사명을 입력하세요.",
-                        height = 38.dp
+                        height = 48.dp
                     )
                 }
             }

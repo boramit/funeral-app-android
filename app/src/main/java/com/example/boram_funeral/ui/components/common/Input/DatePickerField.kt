@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.text.SimpleDateFormat
@@ -27,19 +28,18 @@ fun DatePickerField(
     onDateSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
     readOnly: Boolean = false,
-    placeholder: String = "선택해주세요."
+    placeholder: String = "선택해주세요.",
+    labelFontSize: TextUnit = 16.sp,
 ) {
     var showModal by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
 
-    // HTML 스타일 레이아웃 (Label 아래 Input 박스)
-    Column(modifier = Modifier) {
-        // 1. 라벨 (Label)
+    Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = label,
-            fontSize = 12.sp,
+            fontSize = labelFontSize,
             fontWeight = FontWeight.SemiBold,
-            color = Color(0xFF333333), // 진한 회색
+            color = Color(0xFF333333),
             modifier = Modifier.padding(bottom = 6.dp)
         )
 
@@ -47,7 +47,7 @@ fun DatePickerField(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(42.dp) // 입력창 높이 고정
+                .height(48.dp) // 입력창 높이 고정
                 .background(Color.White)
                 .clip(RoundedCornerShape(8.dp))
                 .border(1.dp, Color(0xFFE8EAED), RoundedCornerShape(8.dp))

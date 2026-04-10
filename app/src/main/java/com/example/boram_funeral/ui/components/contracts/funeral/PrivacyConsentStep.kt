@@ -45,7 +45,7 @@ import com.example.boram_funeral.ui.screens.contract.logic.ContractViewModel
 private val ColorPrimary   = Color(0xFF05195F)
 private val ColorBg        = Color(0xFFF9F9F9)
 private val ColorBorder    = Color(0xFFCCCCCC)
-private val ColorTableHead = Color(0xFFEEF2FF)
+private val ColorTableHead = Color(0xFFF5F7FA)
 private val ColorText      = Color(0xFF222222)
 private val ColorSub       = Color(0xFF555555)
 private val ColorNotice    = Color(0xFF888888)
@@ -80,7 +80,7 @@ fun PrivacyConsentStep(viewModel: ContractViewModel) {
             Text(
                 text = "개인정보 수집 및 이용에 관한 동의",
                 style = TextStyle(
-                    fontSize = 17.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = ColorPrimary,
                     textAlign = TextAlign.Center
@@ -93,19 +93,20 @@ fun PrivacyConsentStep(viewModel: ContractViewModel) {
             // ── 안내 문구 ─────────────────────────────────────────────────────
             Text(
                 text = "장례행사(이하, '서비스'라 합니다.)의 원활한 진행을 위하여 보람상조개발(주) 보람인천장례식장(이하, '장례식장'이라 합니다)은 고인 및 유가족 관계인의 개인정보를 수집하고 있으며 장례식장이 취득한 개인정보는 \"통신비밀보호법\", \"전기통신사업법\" 및 \"개인정보보호법\" 등 준수하여야 할 관련 법령상의 개인정보 보호 규정을 준수하여 이용 됩니다.",
-                style = TextStyle(fontSize = 12.sp, color = ColorSub, lineHeight = 20.sp),
+                style = TextStyle(fontSize = 14.sp, color = ColorSub, lineHeight = 20.sp),
                 modifier = Modifier.padding(bottom = 20.dp)
             )
 
             // ── 1. 개인정보 수집·이용 동의 (필수) ────────────────────────────
             SectionTitle("1. 개인정보 수집·이용 동의")
+            Spacer(modifier = Modifier.height(4.dp))
             SectionLabel("■ 필수사항")
             Text(
                 text = "본 서비스와 관련하여 장례식장이 귀하의 개인정보를 아래와 같이 수집·이용하기 위해 동의를 구합니다.",
-                style = TextStyle(fontSize = 12.sp, color = ColorSub, lineHeight = 19.sp),
+                style = TextStyle(fontSize = 14.sp, color = ColorSub, lineHeight = 19.sp),
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-
+            Spacer(modifier = Modifier.height(8.dp))
             PrivacyTable(
                 rows = listOf(
                     PrivacyRow(
@@ -139,7 +140,7 @@ fun PrivacyConsentStep(viewModel: ContractViewModel) {
             SectionLabel("■ 상품 홍보에 관한 동의 (선택)")
             Text(
                 text = "장례식장이 귀하의 개인정보를 아래와 같이 수집·이용하기 위해 동의를 구합니다.",
-                style = TextStyle(fontSize = 12.sp, color = ColorSub, lineHeight = 19.sp),
+                style = TextStyle(fontSize = 14.sp, color = ColorSub, lineHeight = 19.sp),
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
@@ -171,12 +172,13 @@ fun PrivacyConsentStep(viewModel: ContractViewModel) {
 
             // ── 3. 고유식별번호 수집·이용 동의 ───────────────────────────────
             SectionTitle("2. 고유식별번호(주민등록번호) 수집·이용 동의")
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "본 서비스와 관련하여 장례식장이 귀하의 고유식별번호를 아래와 같이 수집·이용하기 위해 동의를 구합니다.",
-                style = TextStyle(fontSize = 12.sp, color = ColorSub, lineHeight = 19.sp),
+                style = TextStyle(fontSize = 14.sp, color = ColorSub, lineHeight = 19.sp),
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-
+            Spacer(modifier = Modifier.height(8.dp))
             PrivacyTable(
                 rows = listOf(
                     PrivacyRow(
@@ -208,11 +210,13 @@ fun PrivacyConsentStep(viewModel: ContractViewModel) {
 
             // ── 4. 제3자 제공 동의 ────────────────────────────────────────────
             SectionTitle("3. 마케팅 활용을 위한 개인정보의 제3자 제공 동의")
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "귀하의 개인정보를 아래와 같이 제3자에게 제공함에 동의를 구합니다.",
-                style = TextStyle(fontSize = 12.sp, color = ColorSub, lineHeight = 19.sp),
+                style = TextStyle(fontSize = 14.sp, color = ColorSub, lineHeight = 19.sp),
                 modifier = Modifier.padding(bottom = 8.dp)
             )
+            Spacer(modifier = Modifier.height(8.dp))
 
             ThirdPartyTable(
                 agreed = uiState.privacyThirdPartyAgree,
@@ -338,7 +342,7 @@ private fun PrivacyFooter(
                                 }
                             }
                         } else {
-                            Text("성명 (인)", fontSize = 12.sp, color = Color.Gray)
+                            Text("성명 (인)", fontSize = 14.sp, color = Color.Gray)
                         }
                     }
                 }
@@ -364,7 +368,7 @@ private fun ConsentCheckRow(
     ) {
         Text(
             text = label,
-            style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Bold, color = ColorText),
+            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, color = ColorText),
             modifier = Modifier.weight(1f)
         )
         Spacer(modifier = Modifier.width(4.dp))
@@ -375,7 +379,7 @@ private fun ConsentCheckRow(
                     onCheckedChange = { if (it) onAgree() },
                     colors = CheckboxDefaults.colors(checkedColor = ColorPrimary)
                 )
-                Text("동의", fontSize = 13.sp)
+                Text("동의", fontSize = 14.sp)
             }
             Spacer(modifier = Modifier.width(6.dp))
             Row (verticalAlignment = Alignment.CenterVertically){
@@ -384,7 +388,7 @@ private fun ConsentCheckRow(
                     onCheckedChange = { if (it) onDisagree() },
                     colors = CheckboxDefaults.colors(checkedColor = Color(0xFFE53935))
                 )
-                Text("미동의", fontSize = 13.sp)
+                Text("미동의", fontSize = 14.sp)
             }
         }
     }
@@ -467,6 +471,7 @@ private fun ThirdPartyTable(
                 .fillMaxWidth()
                 .background(ColorTableHead)
                 .height(IntrinsicSize.Min)
+                .padding(6.dp)
         ) {
             TableCell("제공받는자", 1.5f, isHeader = true)
             VerticalLine()
@@ -522,7 +527,7 @@ private fun ThirdPartyTable(
                         colors = CheckboxDefaults.colors(checkedColor = ColorPrimary),
                         modifier = Modifier.size(20.dp)
                     )
-                    Text("동의", fontSize = 11.sp)
+                    Text("동의", fontSize = 12.sp)
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -532,7 +537,7 @@ private fun ThirdPartyTable(
                         colors = CheckboxDefaults.colors(checkedColor = Color(0xFFE53935)),
                         modifier = Modifier.size(20.dp)
                     )
-                    Text("미동의", fontSize = 11.sp)
+                    Text("미동의", fontSize = 12.sp)
                 }
             }
         }
@@ -546,7 +551,7 @@ private fun RowScope.TableCell(text: String, weight: Float, isHeader: Boolean = 
     Text(
         text = text,
         style = TextStyle(
-            fontSize = 11.sp,
+            fontSize = 14.sp,
             fontWeight = if (isHeader) FontWeight.Bold else FontWeight.Normal,
             color = ColorText,
             textAlign = TextAlign.Center
@@ -573,7 +578,7 @@ private fun RowScope.VerticalLine() {
 private fun SectionTitle(text: String) {
     Text(
         text = text,
-        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = ColorPrimary),
+        style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold, color = ColorPrimary),
         modifier = Modifier.padding(bottom = 6.dp, top = 4.dp)
     )
 }
@@ -582,7 +587,7 @@ private fun SectionTitle(text: String) {
 private fun SectionLabel(text: String) {
     Text(
         text = text,
-        style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Bold, color = ColorText),
+        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = ColorText),
         modifier = Modifier.padding(bottom = 6.dp)
     )
 }
@@ -593,7 +598,7 @@ private fun NoticeTexts(notices: List<String>) {
         notices.forEach { notice ->
             Text(
                 text = "※ $notice",
-                style = TextStyle(fontSize = 11.sp, color = ColorNotice, lineHeight = 17.sp),
+                style = TextStyle(fontSize = 14.sp, color = ColorNotice, lineHeight = 24.sp),
                 modifier = Modifier.padding(bottom = 4.dp)
             )
         }

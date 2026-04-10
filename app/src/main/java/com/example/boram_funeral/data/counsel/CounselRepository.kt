@@ -50,7 +50,8 @@ class CounselRepository {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                onResult("연결 실패")
+                Log.e("API_TEST", "연결 실패: ${t.message}", t)
+                onResult("연결 실패: ${t.message}")
             }
         })
     }

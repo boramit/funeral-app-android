@@ -73,26 +73,26 @@ fun BoramSideBar(
             Text(
                 text = "관리자 님",
                 color = White,
-                fontSize = 16.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 text = "사번: 20240001",
                 color = White.copy(alpha = 0.8f),
-                fontSize = 12.sp
+                fontSize = 14.sp
             )
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
         // 2. 메뉴 리스트 영역
-        DrawerMenuItem(
-            icon = Icons.Default.Home,
-            label = "메인",
-            onClick = {
-                navController.navigate("home")
-            }
-        )
+//        DrawerMenuItem(
+//            icon = Icons.Default.Home,
+//            label = "메인",
+//            onClick = {
+//                navController.navigate("home")
+//            }
+//        )
         DrawerMenuItem(
             icon = Icons.Default.Notifications,
             label = "신규 상담(로컬 테스트)",
@@ -134,7 +134,7 @@ fun DrawerMenuItem(
 ) {
     NavigationDrawerItem(
         icon = { Icon(imageVector = icon, contentDescription = null, modifier = Modifier.size(16.dp), tint = White) },
-        label = { Text(text = label, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = White,) },
+        label = { Text(text = label, fontWeight = FontWeight.Medium, fontSize = 16.sp, color = White,) },
         selected = false,
         onClick = onClick,
         colors = NavigationDrawerItemDefaults.colors(
@@ -147,7 +147,7 @@ fun DrawerMenuItem(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .height(48.dp) // 1. 기본 48dp보다 낮은 값을 줘서 높이 자체를 줄임
+            .height(58.dp) // 1. 기본 48dp보다 낮은 값을 줘서 높이 자체를 줄임
             .padding(horizontal = 8.dp) // 2. 좌우 여백만 살짝 유지
     )
 }
